@@ -1,0 +1,31 @@
+<div class="w-full py-6">
+    <div class="flex items-center justify-between">
+        <h3 class="text-sm font-medium text-gray-500">Requested item(s)</h3>
+        <h3 class="text-sm font-medium text-gray-500">Requested quantity</h3>
+        <h3 class="text-sm font-medium text-gray-500">Requested By</h3>
+        <h3 class="text-sm font-medium text-gray-500">Approved By</h3>
+        <h3 class="text-sm font-medium text-gray-500">Issued By</h3>
+        <h3 class="text-sm font-medium text-gray-500">Received By</h3>
+    </div>
+    <hr />
+    <ul
+        class="flex w-full list-inside list-disc items-center justify-between space-y-2.5 pt-3 text-gray-800"
+    >
+        @foreach ($requisition as $item)
+        <li class="list-none">{{ $item->stock->supply->name }}</li>
+        <li class="list-none">
+            <x-badge flat amber label="{{ $item->quantity }} pc" />
+        </li>
+        <li class="list-none">{{ $item->requisition->requestedBy->name }}</li>
+        <li class="list-none">
+            {{ $item->requisition->approvedBy->name ?? 'null' }}
+        </li>
+        <li class="list-none">
+            {{ $item->requisition->issuedBy->name ?? 'null' }}
+        </li>
+        <li class="list-none">
+            {{ $item->requisition->receivedBy->name ?? 'null' }}
+        </li>
+        @endforeach
+    </ul>
+</div>

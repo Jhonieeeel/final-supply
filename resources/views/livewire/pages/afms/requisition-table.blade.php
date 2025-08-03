@@ -47,11 +47,12 @@
                                                     {{ $requisition->requestedBy->name }}</td>
                                                 <td
                                                     class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
-                                                    {{ $requisition->items->count() }}</td>
+                                                    <x-badge flat amber label="{{ $requisition->items->count() }}" />
+                                                </td>
                                                 <td
                                                     class="px-6 text-end py-4 whitespace-nowrap text-sm font-medium text-blue-800">
-                                                    <x-button wire:click='select({{ $requisition->id }})' 2xs positive
-                                                        outline label="View" icon="check" />
+                                                    <x-button wire:click='select({{ $requisition->requested_by }})' 2xs
+                                                        positive outline label="View" icon="check" />
                                                 </td>
                                             </tr>
                                         @empty

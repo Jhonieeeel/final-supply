@@ -38,18 +38,6 @@ class RequisitionTable extends Component
          return view('livewire.pages.afms.requisition-table', [
             'requisitions' => Requisition::with('items')->paginate(5)
          ]);
-        // return view('livewire.pages.afms.requisition-table', [
-        //     'requisitions' => RequisitionItem::query()
-        //     ->with([
-        //         'stock' => function($query) {
-        //             $query->with('supply');  
-        //         },
-        //         'requisition'
-        //     ])
-        //     ->latest()  
-        //     ->paginate(5)
-        // ]);
-
     }
 
     public function supplies(Request $request)
