@@ -52,7 +52,7 @@
                                                 <td
                                                     class="px-6 text-end py-4 whitespace-nowrap text-sm font-medium text-blue-800">
                                                     <x-button wire:click='select({{ $requisition->requested_by }})' 2xs
-                                                        positive outline label="View" icon="check" />
+                                                        positive outline label="Select" icon="check" />
                                                 </td>
                                             </tr>
                                         @empty

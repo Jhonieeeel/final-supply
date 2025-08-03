@@ -1,16 +1,17 @@
-<div class="bg-white sm:mt-12 sm:px-6">
-    <div class="sm:py-6 flex items-center gap-x-1.5">
-        <p class="font-medium text-md">Confirmation Tab</p>
-        <x-icon name="check" class="w-5 h-5" outline />
-    </div>
+<div class="bg-white sm:mt-12 sm:px-6 shadow">
+
     @if ($requisitions)
+        <div class="sm:py-6 flex items-center gap-x-1.5">
+            <p class="font-medium text-md">Confirmation Tab</p>
+            <x-icon name="check" class="w-5 h-5" outline />
+        </div>
         <div class="border-b border-gray-200">
             <nav class="flex gap-x-1" aria-label="Tabs" role="tablist" aria-orientation="horizontal">
                 <button type="button" wire:click="$set('activeTab', 'tab1')"
                     class="-mb-px py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium text-center border rounded-t-lg disabled:opacity-50 disabled:pointer-events-none
         {{ $activeTab === 'tab1'
-            ? 'bg-white border-b-transparent text-gray-600 border-gray-200  hover:text-gray-600'
-            : 'bg-gray-50 text-gray-500 border-gray-200 hover:text-gray-700' }}"
+            ? 'bg-white border-b-transparent text-gray-600 font-semibold border-gray-200  hover:text-gray-600'
+            : 'bg-gray-50 text-gray-500  border-gray-200 hover:text-gray-700' }}"
                     id="tab1" aria-selected="{{ $activeTab === 'tab1' ? 'true' : 'false' }}">
                     User Request
                 </button>
@@ -18,12 +19,17 @@
                 <button type="button" wire:click="$set('activeTab', 'tab2')"
                     class="-mb-px py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium text-center border rounded-t-lg disabled:opacity-50 disabled:pointer-events-none
         {{ $activeTab === 'tab2'
-            ? 'bg-white border-b-transparent text-gray-600 border-gray-200 hover:text-gray-600'
+            ? 'bg-white border-b-transparent text-gray-600 font-semibold border-gray-200 hover:text-gray-600'
             : 'bg-gray-50 text-gray-500 border-gray-200 hover:text-gray-700' }}"
                     id="tab2" aria-selected="{{ $activeTab === 'tab2' ? 'true' : 'false' }}">
                     Requisition Slip
                 </button>
             </nav>
+        </div>
+    @else
+        <div class="flex flex-col items-center gap-3 sm:py-6">
+            <p class="text-center"><x-icon name="arrow-up" class="w-8 h-8" solid /></p>
+            <p class="text-center text-sm text-gray-700">Select a Requisition item</p>
         </div>
     @endif
 
@@ -106,7 +112,7 @@
                 @endif
             @elseif($activeTab === 'tab2')
                 <div class="w-full flex justify-center items-start gap-x-6 py-6">
-                    <p>Requisition Slip</p>
+                    @livewire('pages.components.requisition-slip')
                 </div>
             @endif
         </div>
