@@ -55,6 +55,11 @@ class SupplyTable extends Component
         ]);
     }
 
+
+    public function addModal() {
+        $this->dispatch('addSupply');
+    }
+
     #[Layout('layouts.app')]
     public function render()
     {

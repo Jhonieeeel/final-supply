@@ -23,7 +23,7 @@
                                         </svg>
                                     </div>
                                 </div>
-                                <x-button x-on:click="$openModal('addSupply')" positive label="Add Supply" />
+                                <x-button @click="$openModal('addSupply')" positive label="Add Supply" />
                             </div>
                             <div class="overflow-hidden">
                                 <table class="min-w-full divide-y divide-gray-200">

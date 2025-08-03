@@ -9,7 +9,7 @@
                             <div class="py-3 px-4 sm:flex justify-between items-center w-full">
                                 <div class="relative">
                                     <label class="sr-only">Search</label>
-                                    <input type="text" name="hs-table-with-pagination-search"
+                                    <input type="text" wire:model.live.debounce.300ms='tableSearch'
                                         id="hs-table-with-pagination-search"
                                         class="py-1.5 sm:py-2 px-3 ps-9 block w-full border-gray-200 shadow-2xs rounded-lg sm:text-sm focus:z-10 focus:border-orange-500 focus:ring-orange-500 disabled:opacity-50 disabled:pointer-events-none"
                                         placeholder="Search for items">
