@@ -53,6 +53,8 @@ class SupplyTable extends Component
             'title' => 'Created Successfully!',
             'description' => 'Supply created.',
         ]);
+
+        $this->supplyForm->reset();
     }
 
 

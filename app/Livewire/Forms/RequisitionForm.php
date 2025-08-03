@@ -14,16 +14,16 @@ class RequisitionForm extends Form
     #[Validate(['required', 'min:6'])]
     public $ris;
 
-    #[Validate(['required', 'exists:users,id'])]
+    #[Validate(['required', 'nullable', 'exists:users,id'])]
     public $requested_by;
 
-    #[Validate(['required', 'exists:users,id'])]
+    #[Validate(['required','nullable', 'exists:users,id'])]
     public $approved_by;
 
-    #[Validate(['required', 'exists:users,id'])]
+    #[Validate(['required', 'nullable','exists:users,id'])]
     public $issued_by;
 
-    #[Validate(['required', 'exists:users,id'])]
+    #[Validate(['required','nullable', 'exists:users,id'])]
     public $received_by;
 
 
@@ -51,6 +51,8 @@ class RequisitionForm extends Form
                 'requisition_id' => $userRequest->id
             ]);
         }
+
+        $this->validate();
 
         $requisition = Requisition::create([
             'ris' => $this->ris,
