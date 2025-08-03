@@ -4,6 +4,7 @@ namespace App\Livewire\Pages\Afms;
 
 use App\Livewire\Forms\RequisitionForm;
 use App\Models\RequisitionItem;
+use App\Models\Stock;
 use App\Models\Supply;
 use Illuminate\Http\Request;
 use Livewire\Attributes\Layout;
@@ -42,11 +43,20 @@ class RequisitionTable extends Component
     {
         $search = $request->get('search', '');
 
+        $stocks = Stock::with('supply')
+            ->whereHas('supply', function ($query) use ($search) {
+                $query->where('name', 'like', "%{$search}%");
+            })
+            ->limit(10)
+            ->get();
+
         return response()->json(
-            Supply::where('name', 'like', "%{$search}%")
-                ->limit(10)
-                ->with('stock')
-                ->get(['id', 'name', 'quantity'])
+            $stocks->map(function ($stock) {
+                return [
+                    'id' => $stock->id,
+                    'name' => $stock->supply->name,
+                ];
+            })
         );
     }
 }

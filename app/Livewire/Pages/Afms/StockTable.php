@@ -62,7 +62,7 @@ class StockTable extends Component
     public function render()
     {
         return view('livewire.pages.afms.stock-table', [
-            'stocks' => Stock::with('supply')
+             'stocks' => Stock::with('supply')
                 ->whereHas('supply', function ($query) {
                     $query->where('name', 'like', "%{$this->tableSearch}%");
                 })
