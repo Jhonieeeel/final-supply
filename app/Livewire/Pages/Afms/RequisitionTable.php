@@ -19,7 +19,7 @@ class RequisitionTable extends Component
     public RequisitionForm $reqForm;
 
     public function select($id) {
-        $this->dispatch('selectedRequisition', requisition: $id);
+        $this->dispatch('selectedRequisition', requisition: $id, tab: 'tab1');
     }
 
     public function save()
