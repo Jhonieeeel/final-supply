@@ -3,6 +3,7 @@
 namespace App\Livewire\Pages\Afms;
 
 use App\Livewire\Forms\RequisitionForm;
+use App\Models\Requisition;
 use App\Models\RequisitionItem;
 use App\Models\Stock;
 use App\Models\Supply;
@@ -16,12 +17,14 @@ class RequisitionTable extends Component
     use WireUiActions;
 
     public RequisitionForm $reqForm;
-    public $selectedStock;
+
+    public function select($id) {
+        $this->dispatch('selectedRequisition', requisition: $id);
+    }
 
     public function save()
     {
         $this->reqForm->submit();
-
         $this->notification()->send([
             'icon' => 'success',
             'title' => 'Created Successfully!',
@@ -32,11 +35,21 @@ class RequisitionTable extends Component
     #[Layout('layouts.app')]
     public function render()
     {
-        $requisitions = RequisitionItem::with('stock.supply', 'requisition')->get();
+         return view('livewire.pages.afms.requisition-table', [
+            'requisitions' => Requisition::with('items')->paginate(5)
+         ]);
+        // return view('livewire.pages.afms.requisition-table', [
+        //     'requisitions' => RequisitionItem::query()
+        //     ->with([
+        //         'stock' => function($query) {
+        //             $query->with('supply');  
+        //         },
+        //         'requisition'
+        //     ])
+        //     ->latest()  
+        //     ->paginate(5)
+        // ]);
 
-        return view('livewire.pages.afms.requisition-table', [
-            'requisitions' => $requisitions
-        ]);
     }
 
     public function supplies(Request $request)

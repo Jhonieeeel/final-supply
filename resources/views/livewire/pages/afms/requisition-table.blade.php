@@ -30,37 +30,29 @@
                                         <tr>
                                             <th scope="col"
                                                 class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">
-                                                RIS</th>
-                                            <th scope="col"
-                                                class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">
-                                                Item Description</th>
-
-                                            <th scope="col"
-                                                class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">
-                                                Requested Quantity</th>
-                                            <th scope="col"
-                                                class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">
                                                 Requested By</th>
+                                            <th scope="col"
+                                                class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">
+                                                No. Requested Items</th>
                                             <th scope="col"
                                                 class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">
                                                 Action</th>
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-gray-200">
-                                        @forelse ($requisitions as $item)
-                                            <tr class="hover:bg-gray-200">
+                                        @forelse ($requisitions as $requisition)
+                                            <tr class="hover:bg-gray-50">
                                                 <td
                                                     class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
-                                                    {{ $item->requisition->ris }}</td>
+                                                    {{ $requisition->requestedBy->name }}</td>
                                                 <td
                                                     class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
-                                                    {{ $item->stock->supply->name }}</td>
+                                                    {{ $requisition->items->count() }}</td>
                                                 <td
-                                                    class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
-                                                    {{ $item->quantity }}</td>
-                                                <td
-                                                    class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
-                                                    {{ $item->requisition->requestedBy->name }}</td>
+                                                    class="px-6 text-end py-4 whitespace-nowrap text-sm font-medium text-blue-800">
+                                                    <x-button wire:click='select({{ $requisition->id }})' 2xs positive
+                                                        outline label="View" icon="check" />
+                                                </td>
                                             </tr>
                                         @empty
                                             <tr class="hover:bg-gray-200">
@@ -78,8 +70,13 @@
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        @livewire('pages.components.confirmation-tab')
+    </div>
+
     <x-modal-card title="Requisition" name="addRequisition" warning>
         <form>
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">

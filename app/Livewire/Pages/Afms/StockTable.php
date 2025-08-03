@@ -68,12 +68,17 @@ class StockTable extends Component
                 })
                 ->limit(5)
                 ->paginate(5),
-            'supplies' => Supply::all()
         ]);
+    }
+
+    public function getSupplies()
+    {
+        return Supply::all(['id', 'name'])->toArray();
     }
 
     public function supplies(Request $request)
     {
+
         $search = $request->get('search', '');
 
         return response()->json(

@@ -120,7 +120,7 @@
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <x-input wire:model="stockForm.barcode" label="Barcode" warning placeholder="Input barcode" />
                 <x-select wire:model="stockForm.supply_id" warning label="Search a Supply"
-                    placeholder="Select some supply" :async-data="route('api.supplies.index')" option-label="name" option-value="id" />
+                    placeholder="Select some supply" :options="$this->getSupplies()" option-label="name" option-value="id" />
                 <x-number warning wire:model="stockForm.quantity" label="Quantity" placeholder="0" />
                 <x-number wire:model="stockForm.price" min="1" max="9999" step="0.2"
                     label="Supply Price" placeholder="0" />
