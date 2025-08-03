@@ -12,17 +12,17 @@
         Figtree, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
         "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 
-    --color-primary-50: #f6fde8;
-    --color-primary-100: #eafacd;
-    --color-primary-200: #d6f5a1;
-    --color-primary-300: #b9ec6a;
-    --color-primary-400: #9ddf3c;
-    --color-primary-500: #7ec41e;
-    --color-primary-600: #609d13;
-    --color-primary-700: #4f8015;
-    --color-primary-800: #3d5f15;
-    --color-primary-900: #345017;
-    --color-primary-950: #192c07;
+    --color-primary-50: #fffbeb;
+    --color-primary-100: #fef3c7;
+    --color-primary-200: #fde68a;
+    --color-primary-300: #fcd34d;
+    --color-primary-400: #fbbf24;
+    --color-primary-500: #f59e0b;
+    --color-primary-600: #d97706;
+    --color-primary-700: #b45309;
+    --color-primary-800: #92400e;
+    --color-primary-900: #78350f;
+    --color-primary-950: #451a03;
 
     --color-secondary-50: #f8fafc;
     --color-secondary-100: #f1f5f9;

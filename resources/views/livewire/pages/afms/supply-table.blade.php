@@ -45,15 +45,16 @@
                                     </thead>
                                     <tbody class="divide-y divide-gray-200">
                                         @forelse ($supplies as $supply)
-                                            <tr class="hover:bg-gray-200">
+                                            <tr class="hover:bg-gray-200 ">
                                                 <td
                                                     class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
                                                     {{ $supply->name }}</td>
                                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
                                                     {{ $supply->category }}
                                                 </td>
-                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
-                                                    {{ $supply->unit }}
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm  text-gray-800">
+                                                    <x-badge flat color="{{ badgeColor($supply->unit) }}"
+                                                        label="{{ $supply->unit }}" />
                                                 </td>
                                                 <td colspan="2"
                                                     class="px-6 py-4 whitespace-nowrap text-end text-sm font-medium space-x-2">

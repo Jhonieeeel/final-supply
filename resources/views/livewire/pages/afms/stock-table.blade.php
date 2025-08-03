@@ -56,10 +56,10 @@
                                                     {{ $stocks->barcode }}
                                                 </td>
                                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
-                                                    {{ $stocks->quantity }}
+                                                    <x-badge flat info label="{{ $stocks->quantity }}" />
                                                 </td>
                                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
-                                                    {{ $stocks->price }}
+                                                    <x-badge flat warning label="{{ $stocks->price }}" />
                                                 </td>
                                                 <td colspan="2"
                                                     class="px-6 py-4 whitespace-nowrap text-end text-sm font-medium space-x-2">
@@ -78,7 +78,7 @@
                                             </tr>
                                         @empty
                                             <tr class="hover:bg-gray-200">
-                                                <td colspan="4"
+                                                <td colspan="5"
                                                     class="px-6 py-4 whitespace-nowrap text-gray-500 text-center text-sm font-medium">
                                                     No stock yet.
                                                 </td>

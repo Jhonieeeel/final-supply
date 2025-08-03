@@ -47,18 +47,21 @@
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-gray-200">
-                                        @forelse ($requisitions as $requisition)
-                                            @foreach ($requisition->items as $item)
-                                                <tr class="hover:bg-gray-200">
-                                                    <td
-                                                        class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
-                                                        {{ $item->ris }}</td>
-                                                    <td
-                                                        class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
-                                                        {{ $requisition->items->stock->supply->name }}</td>
-                                                </tr>
-                                            @endforeach
-
+                                        @forelse ($requisitions as $item)
+                                            <tr class="hover:bg-gray-200">
+                                                <td
+                                                    class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
+                                                    {{ $item->requisition->ris }}</td>
+                                                <td
+                                                    class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
+                                                    {{ $item->stock->supply->name }}</td>
+                                                <td
+                                                    class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
+                                                    {{ $item->quantity }}</td>
+                                                <td
+                                                    class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
+                                                    {{ $item->requisition->requestedBy->name }}</td>
+                                            </tr>
                                         @empty
                                             <tr class="hover:bg-gray-200">
                                                 <td colspan="5"
@@ -77,11 +80,7 @@
             </div>
         </div>
     </div>
-    <x-modal-card title="Edit Stock" name="addRequisition" warning>
-        <div class="mb-12">
-            <p class="text-xs font-medium uppercase text-gray-400">Item Description</p>
-            <p></p>
-        </div>
+    <x-modal-card title="Requisition" name="addRequisition" warning>
         <form>
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div class="col-span-2">
@@ -89,7 +88,7 @@
                 </div>
                 <x-select wire:model="reqForm.stock_id" warning label="Search a Stock"
                     placeholder="Select item to request" :async-data="route('api.stocks.index')" option-label="name" option-value="id" />
-                <x-number warning wire:model="reqForm.quantity" label="Quantity" placeholder="0" />
+                <x-number warning wire:model="reqForm.quantity" label="Request Quantity" placeholder="0" />
             </div>
 
             <x-slot name="footer" class="flex justify-between gap-x-4">
