@@ -1,31 +1,182 @@
-<div class="w-full py-6">
-    <div class="flex items-center justify-between">
-        <h3 class="text-sm font-medium text-gray-500">Requested item(s)</h3>
-        <h3 class="text-sm font-medium text-gray-500">Requested quantity</h3>
-        <h3 class="text-sm font-medium text-gray-500">Requested By</h3>
-        <h3 class="text-sm font-medium text-gray-500">Approved By</h3>
-        <h3 class="text-sm font-medium text-gray-500">Issued By</h3>
-        <h3 class="text-sm font-medium text-gray-500">Received By</h3>
+<div class="w-full border border-gray-700 text-gray-800">
+    <div class="flex text-sm text-nowrap">
+        <div class="flex w-1/2 border-r border-gray-700">
+            <div class="w-24 border-r border-gray-700">Division</div>
+            <div class="flex-1"></div>
+        </div>
+        <div class="flex w-1/2">
+            <div class="w-auto">Responsibility Center Code:</div>
+            <div class="flex-1"></div>
+        </div>
     </div>
-    <hr />
-    <ul
-        class="flex w-full list-inside list-disc items-center justify-between space-y-2.5 pt-3 text-gray-800"
-    >
-        @foreach ($requisition as $item)
-        <li class="list-none">{{ $item->stock->supply->name }}</li>
-        <li class="list-none">
-            <x-badge flat amber label="{{ $item->quantity }} pc" />
-        </li>
-        <li class="list-none">{{ $item->requisition->requestedBy->name }}</li>
-        <li class="list-none">
-            {{ $item->requisition->approvedBy->name ?? 'null' }}
-        </li>
-        <li class="list-none">
-            {{ $item->requisition->issuedBy->name ?? 'null' }}
-        </li>
-        <li class="list-none">
-            {{ $item->requisition->receivedBy->name ?? 'null' }}
-        </li>
-        @endforeach
-    </ul>
+    <div class="flex border-t border-gray-700 text-sm text-nowrap">
+        <div class="flex w-1/2 border-r border-gray-700">
+            <div class="w-24 border-r border-gray-700">Office</div>
+            <div class="flex-1"></div>
+        </div>
+        <div class="flex w-1/2">
+            <div class="w-24border-r border-gray-700">RIS No:</div>
+            <div class="flex-1"></div>
+        </div>
+    </div>
+
+    <div class="flex border-t border-gray-700 text-sm font-semibold italic">
+        <div class="w-1/2 text-center">Requisition</div>
+        <div class="w-1/5 border-x border-gray-700 text-center">
+            Availability
+        </div>
+        <div class="w-[30%] text-center">Issue</div>
+    </div>
+
+    <div class="flex border-t border-gray-700 text-sm">
+        <div class="flex w-1/2">
+            <div class="flex-1 border-r border-gray-700 text-center">
+                Stock No.
+            </div>
+            <div class="w-16 border-r border-gray-700 text-center">Unit</div>
+            <div class="flex-1 border-r border-gray-700 text-center">Item</div>
+            <div class="w-16 text-center">Quantity</div>
+        </div>
+        <div class="flex w-1/5 border-x border-gray-700">
+            <div class="flex-1 border-r border-gray-700 text-center">Yes</div>
+            <div class="flex-1 text-center">No</div>
+        </div>
+        <div class="flex w-[30%]">
+            <div class="flex-1 border-r border-gray-700 text-center">
+                Quantity
+            </div>
+            <div class="flex-1 text-center">Remarks</div>
+        </div>
+    </div>
+
+    <!-- Data Row -->
+    <div class="flex border-t border-gray-700 text-sm">
+        <div class="flex w-1/2">
+            <div class="flex-1 border-r border-gray-700">Barcode-100</div>
+            <div class="w-16 border-r border-gray-700 text-center">pc</div>
+            <div class="flex-1 border-r border-gray-700">Alcohol 150ml</div>
+            <div class="w-16 text-center">5</div>
+        </div>
+        <div class="flex w-1/5 border-x border-gray-700">
+            <div class="flex-1 border-r border-gray-700 text-center">
+                <svg
+                    class="mx-auto h-4 w-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M5 13l4 4L19 7"
+                    ></path>
+                </svg>
+            </div>
+            <div class="flex-1 text-center"></div>
+        </div>
+        <div class="flex w-[30%]">
+            <div class="flex-1 border-r border-gray-700 text-center">5</div>
+            <div class="flex-1"></div>
+        </div>
+    </div>
+    <div class="flex border-t border-gray-700 text-sm">
+        <div class="flex w-1/2">
+            <div class="flex-1 border-r border-gray-700">Barcode-1001</div>
+            <div class="w-16 border-r border-gray-700 text-center">pc</div>
+            <div class="flex-1 border-r border-gray-700">Alcohol 50ml</div>
+            <div class="w-16 text-center">5</div>
+        </div>
+        <div class="flex w-1/5 border-x border-gray-700">
+            <div class="flex-1 border-r border-gray-700 text-center">
+                <svg
+                    class="mx-auto h-4 w-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M5 13l4 4L19 7"
+                    ></path>
+                </svg>
+            </div>
+            <div class="flex-1 text-center"></div>
+        </div>
+        <div class="flex w-[30%]">
+            <div class="flex-1 border-r border-gray-700 text-center">5</div>
+            <div class="flex-1"></div>
+        </div>
+    </div>
+    <div class="flex border-t border-gray-700 text-sm">
+        <div class="flex w-1/2">
+            <div class="flex-1 border-r border-gray-700">Barcode-1002</div>
+            <div class="w-16 border-r border-gray-700 text-center">pc</div>
+            <div class="flex-1 border-r border-gray-700">Alcohol 500ml</div>
+            <div class="w-16 text-center">15</div>
+        </div>
+        <div class="flex w-1/5 border-x border-gray-700">
+            <div class="flex-1 border-r border-gray-700 text-center">
+                <svg
+                    class="mx-auto h-4 w-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M5 13l4 4L19 7"
+                    ></path>
+                </svg>
+            </div>
+            <div class="flex-1 text-center"></div>
+        </div>
+        <div class="flex w-[30%]">
+            <div class="flex-1 border-r border-gray-700 text-center">5</div>
+            <div class="flex-1"></div>
+        </div>
+    </div>
+    <div class="flex border-t border-gray-700 text-sm">
+        <div class="flex w-1/2">
+            <div class="flex-1 border-r border-gray-700">
+                Barcode-10asdasd03
+            </div>
+            <div class="w-16 border-r border-gray-700 text-center">pc</div>
+            <div class="flex-1 border-r border-gray-700">
+                Alcohol 50asdasd00ml
+            </div>
+            <div class="w-16 text-center">25</div>
+        </div>
+        <div class="flex w-1/5 border-x border-gray-700">
+            <div class="flex-1 border-r border-gray-700 text-center">
+                <svg
+                    class="mx-auto h-4 w-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M5 13l4 4L19 7"
+                    ></path>
+                </svg>
+            </div>
+            <div class="flex-1 text-center"></div>
+        </div>
+        <div class="flex w-[30%]">
+            <div class="flex-1 border-r border-gray-700 text-center">5</div>
+            <div class="flex-1"></div>
+        </div>
+    </div>
+    <div class="border-y border-gray-700 py-2"></div>
+    <div class="flex text-sm">
+        <div class="w-1/6">Purpose.</div>
+        <div class="flex-1 text-center"></div>
+    </div>
 </div>

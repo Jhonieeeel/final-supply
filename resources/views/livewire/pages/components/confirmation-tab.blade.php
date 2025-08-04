@@ -1,4 +1,4 @@
-<div class="bg-white sm:mt-12 sm:px-6 shadow">
+<div class="bg-white sm:mt-12 sm:px-6 shadow rounded">
 
     @if ($requisitions)
         <div class="sm:py-6 flex items-center gap-x-1.5">
@@ -7,7 +7,7 @@
         </div>
         <div class="border-b border-gray-200">
             <nav class="flex gap-x-1" aria-label="Tabs" role="tablist" aria-orientation="horizontal">
-                <button type="button" wire:click="$set('activeTab', 'tab1')"
+                <button type="button" wire:click="changeTab('tab1')"
                     class="-mb-px py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium text-center border rounded-t-lg disabled:opacity-50 disabled:pointer-events-none
         {{ $activeTab === 'tab1'
             ? 'bg-white border-b-transparent text-gray-600 font-semibold border-gray-200  hover:text-gray-600'
@@ -16,7 +16,7 @@
                     User Request
                 </button>
 
-                <button type="button" wire:click="$set('activeTab', 'tab2')"
+                <button type="button" wire:click="changeTab('tab2')"
                     class="-mb-px py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium text-center border rounded-t-lg disabled:opacity-50 disabled:pointer-events-none
         {{ $activeTab === 'tab2'
             ? 'bg-white border-b-transparent text-gray-600 font-semibold border-gray-200 hover:text-gray-600'
@@ -50,14 +50,16 @@
                                         <h3 class="text-sm font-medium">Requested Quantity</h3>
                                     </div>
                                     <hr>
-
                                     <div class="pt-2.5">
-                                        <ul class="list-disc list-inside text-gray-800 space-y-1.5">
+                                        <ul
+                                            class="list-disc list-inside text-gray-800 space-y-1.5 flex items-center justify-between">
                                             @foreach ($items as $item)
-                                                <li class="flex items-center justify-between">
+                                                <li class="list-none">
                                                     <span class="text-sm">
                                                         {{ $item->stock->supply->name }}
                                                     </span>
+                                                </li>
+                                                <li class="list-none">
                                                     <x-badge flat amber label="{{ $item->quantity }}" />
                                                 </li>
                                             @endforeach
@@ -73,7 +75,7 @@
                                         <h3 class="text-sm font-medium">Received By</h3>
                                     </div>
                                     <hr>
-                                    <div class="pt-2">
+                                    <div class="pt-2.5">
                                         <ul
                                             class="list-disc list-inside text-gray-800 space-y-1.5 flex items-center justify-between">
                                             <li class="list-none">

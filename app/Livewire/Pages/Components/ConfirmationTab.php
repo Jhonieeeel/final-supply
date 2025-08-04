@@ -5,27 +5,33 @@ namespace App\Livewire\Pages\Components;
 use App\Models\Requisition;
 use App\Models\RequisitionItem;
 use Livewire\Attributes\On;
+use Livewire\Attributes\Session;
 use Livewire\Component;
-
 class ConfirmationTab extends Component
-{
-    public $requisitions;
+{   
+    public $requisitions = [];
 
-    public $activeTab;
+    public $selectedRequisition;
 
-    public function changeTab($tab) {
+    public $activeTab;   
+
+    public function changeTab($tab) 
+    {
         $this->activeTab = $tab;
+        $this->dispatch('selectedRequisition', requisition: $this->selectedRequisition, tab: $tab);
     }
 
     #[On('selectedRequisition')]
     public function setRequisition($requisition, $tab) 
     {
+        $this->selectedRequisition = $requisition;  
+        $this->activeTab = $tab;
+        
         $this->requisitions = RequisitionItem::with('stock.supply', 'requisition')
-            ->whereHas('requisition', function ($query) use ($requisition) {
-                $query->where('requested_by', $requisition);
+            ->whereHas('requisition', function ($query) {
+                $query->where('requested_by', $this->selectedRequisition);
             })
             ->get();
-        $this->activeTab = $tab;
     }
 
     public function render()
