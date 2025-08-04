@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('approved_by')->nullable()->constrained('users')->cascadeOnDelete();
             $table->foreignId('issued_by')->nullable()->constrained('users')->cascadeOnDelete();
             $table->foreignId('received_by')->nullable()->constrained('users')->cascadeOnDelete();
+            $table->boolean('completed')->default(false);
             $table->timestamps();
         });
     }

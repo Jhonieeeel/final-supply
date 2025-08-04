@@ -59,7 +59,7 @@
                                                     <x-badge flat info label="{{ $stocks->quantity }}" />
                                                 </td>
                                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
-                                                    <x-badge flat warning label="{{ $stocks->price }}" />
+                                                    <x-badge flat warning label="₱ {{ $stocks->price }}" />
                                                 </td>
                                                 <td colspan="2"
                                                     class="px-6 py-4 whitespace-nowrap text-end text-sm font-medium space-x-2">

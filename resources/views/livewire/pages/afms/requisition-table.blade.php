@@ -35,6 +35,9 @@
                                                 class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">
                                                 No. Requested Items</th>
                                             <th scope="col"
+                                                class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">
+                                                Request Status</th>
+                                            <th scope="col"
                                                 class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">
                                                 Action</th>
                                         </tr>
@@ -48,6 +51,11 @@
                                                 <td
                                                     class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
                                                     <x-badge flat amber label="{{ $requisition->items->count() }}" />
+                                                </td>
+                                                <td
+                                                    class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
+                                                    <x-badge flat :color="$requisition->completed ? 'info' : 'negative'"
+                                                        label="{{ $requisition->completed ? 'Completed' : 'Pending' }}" />
                                                 </td>
                                                 <td
                                                     class="px-6 text-end py-4 whitespace-nowrap text-sm font-medium text-blue-800">

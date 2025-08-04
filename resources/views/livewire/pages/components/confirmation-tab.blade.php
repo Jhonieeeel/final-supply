@@ -1,9 +1,9 @@
 <div class="bg-white sm:mt-12 sm:px-6 shadow rounded">
 
     @if ($requisitions)
-        <div class="sm:py-6 flex items-center gap-x-1.5">
-            <p class="font-medium text-md">Confirmation Tab</p>
-            <x-icon name="check" class="w-5 h-5" outline />
+        <div class="sm:py-6 flex items-center gap-x-2">
+            <h3 class="text-lg font-semibold text-gray-800">Requisition Confirmation</h3>
+            <x-icon name="check-circle" class="w-5 h-5 text-green-500" solid />
         </div>
         <div class="border-b border-gray-200">
             <nav class="flex gap-x-1" aria-label="Tabs" role="tablist" aria-orientation="horizontal">
@@ -13,7 +13,7 @@
             ? 'bg-white border-b-transparent text-gray-600 font-semibold border-gray-200  hover:text-gray-600'
             : 'bg-gray-50 text-gray-500  border-gray-200 hover:text-gray-700' }}"
                     id="tab1" aria-selected="{{ $activeTab === 'tab1' ? 'true' : 'false' }}">
-                    User Request
+                    Request Details
                 </button>
 
                 <button type="button" wire:click="changeTab('tab2')"
@@ -22,7 +22,7 @@
             ? 'bg-white border-b-transparent text-gray-600 font-semibold border-gray-200 hover:text-gray-600'
             : 'bg-gray-50 text-gray-500 border-gray-200 hover:text-gray-700' }}"
                     id="tab2" aria-selected="{{ $activeTab === 'tab2' ? 'true' : 'false' }}">
-                    Requisition Slip
+                    Requisition PDF
                 </button>
             </nav>
         </div>
@@ -51,15 +51,12 @@
                                     </div>
                                     <hr>
                                     <div class="pt-2.5">
-                                        <ul
-                                            class="list-disc list-inside text-gray-800 space-y-1.5 flex items-center justify-between">
+                                        <ul class="list-disc list-inside text-gray-800 space-y-1.5">
                                             @foreach ($items as $item)
-                                                <li class="list-none">
+                                                <li class="list-none flex items-center justify-between">
                                                     <span class="text-sm">
                                                         {{ $item->stock->supply->name }}
                                                     </span>
-                                                </li>
-                                                <li class="list-none">
                                                     <x-badge flat amber label="{{ $item->quantity }}" />
                                                 </li>
                                             @endforeach
