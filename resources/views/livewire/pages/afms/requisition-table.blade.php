@@ -60,7 +60,7 @@
                                                 <td
                                                     class="px-6 text-end py-4 whitespace-nowrap text-sm font-medium text-blue-800">
                                                     <x-button wire:click='select({{ $requisition->requested_by }})' 2xs
-                                                        positive outline label="Select" icon="check" />
+                                                        positive outline label="View" icon="check" />
                                                 </td>
                                             </tr>
                                         @empty
@@ -71,7 +71,6 @@
                                                 </td>
                                             </tr>
                                         @endforelse
-
                                     </tbody>
                                 </table>
                             </div>
@@ -89,9 +88,6 @@
     <x-modal-card title="Requisition" name="addRequisition" warning>
         <form>
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <div class="col-span-2">
-                    <x-input wire:model="reqForm.ris" label="Ris" warning placeholder="Input RIS" />
-                </div>
                 <x-select wire:model="reqForm.stock_id" warning label="Search a Stock"
                     placeholder="Select item to request" :async-data="route('api.stocks.index')" option-label="name" option-value="id" />
                 <x-number warning wire:model="reqForm.quantity" label="Request Quantity" placeholder="0" />

@@ -2,20 +2,63 @@
 
 namespace App\Livewire\Pages\Components;
 
+use App\Livewire\Forms\RequisitionForm;
 use App\Models\Requisition;
 use App\Models\RequisitionItem;
+use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Session;
 use Livewire\Component;
+use WireUi\Traits\WireUiActions;
+
+use function PHPUnit\Framework\isEmpty;
 
 class ConfirmationTab extends Component
 {
+
+    use WireUiActions;
+
     public $requisitions = [];
+    public $selectedItems = [];
 
     public $selectedRequisition;
+    public $editRequisition;
+
     public $requisitionStatus = false;
 
     public $activeTab;
+
+    public RequisitionForm $reqForm;
+
+
+    public function delete($requisition_id)
+    {
+        RequisitionItem::find($requisition_id)->delete();
+
+
+        $this->notification()->send([
+            'icon' => 'success',
+            'title' => 'Deleted Successfully!',
+            'description' => 'Stock deleted',
+        ]);
+    }
+
+    public function save()
+    {
+        $this->reqForm->update($this->editRequisition);
+
+        $this->notification()->send([
+            'icon' => 'success',
+            'title' => 'Updated Successfully!',
+            'description' => 'Supply updated.',
+        ]);
+    }
+
+    public function select($id)
+    {
+        $this->editRequisition = RequisitionItem::find($id);
+        $this->reqForm->fill($this->editRequisition);
+    }
 
     public function changeTab($tab)
     {

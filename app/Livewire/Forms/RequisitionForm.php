@@ -11,7 +11,7 @@ use Livewire\Form;
 class RequisitionForm extends Form
 {
     // request
-    #[Validate(['required', 'min:6'])]
+    #[Validate(['nullable', 'min:6'])]
     public $ris;
 
     #[Validate(['nullable', 'exists:users,id'])]
@@ -26,22 +26,46 @@ class RequisitionForm extends Form
     #[Validate(['required', 'exists:stocks,id'])]
     public $stock_id;
 
+    #[Validate(['nullable', 'exists:requisitions,id'])]
+    public $requisition_id;
+
     #[Validate(['required', 'numeric'])]
     public $quantity;
 
+    public function update(RequisitionItem $requisition)
+    {
+        $this->validate();
+        $requisition->update([
+            'stock_id' => $this->stock_id,
+            'quantity' => $this->quantity,
+            'requisition_id' => $this->requisition_id
+        ]);
+    }
 
     public function submit()
     {
-         $this->validate();
+        $this->validate();
 
-        $userRequest = Requisition::where('requested_by', Auth::id())->first();
+        $userRequest = Requisition::with('items')->where('requested_by', Auth::id())->first();
 
         if ($userRequest) {
-            RequisitionItem::create([
-                'stock_id' => $this->stock_id,
-                'quantity' => (int) $this->quantity,
-                'requisition_id' => $userRequest->id
-            ]);
+
+            $existingItem = $userRequest->items->firstWhere('stock_id', $this->stock_id);
+
+            if ($existingItem) {
+
+                $currentQty = $existingItem->quantity + $this->quantity;
+
+                $existingItem->update([
+                    'quantity' => $currentQty,
+                ]);
+            } else {
+                RequisitionItem::create([
+                    'stock_id' => $this->stock_id,
+                    'quantity' => (int) $this->quantity,
+                    'requisition_id' => $userRequest->id,
+                ]);
+            }
         } else {
             $requisition = Requisition::create([
                 'ris' => $this->ris,

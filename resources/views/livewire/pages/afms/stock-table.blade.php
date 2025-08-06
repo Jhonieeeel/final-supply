@@ -23,7 +23,9 @@
                                         </svg>
                                     </div>
                                 </div>
-                                <x-button x-on:click="$openModal('addStock')" positive label="Add stocks" />
+                                @hasanyrole(['super-admin', 'admin'])
+                                    <x-button x-on:click="$openModal('addStock')" positive label="Add stocks" />
+                                @endhasanyrole
                             </div>
                             <div class="overflow-hidden">
                                 <table class="min-w-full divide-y divide-gray-200">
@@ -41,9 +43,11 @@
                                             <th scope="col"
                                                 class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">
                                                 Price</th>
-                                            <th scope="col"
-                                                class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">
-                                                Action</th>
+                                            @hasanyrole(['super-admin', 'admin'])
+                                                <th scope="col"
+                                                    class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">
+                                                    Action</th>
+                                            @endhasanyrole
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-gray-200">
@@ -61,20 +65,22 @@
                                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
                                                     <x-badge flat warning label="₱ {{ $stocks->price }}" />
                                                 </td>
-                                                <td colspan="2"
-                                                    class="px-6 py-4 whitespace-nowrap text-end text-sm font-medium space-x-2">
-                                                    <button x-on:click="$openModal('editStock')"
-                                                        wire:click="select({{ $stocks->id }})"
-                                                        class="cursor-pointer ">
-                                                        <x-icon name="pencil"
-                                                            class="w-5 h-5 text-blue-500 hover:text-blue-700" />
-                                                    </button>
-                                                    <button wire:click="delete({{ $stocks->id }})"
-                                                        class="cursor-pointer">
-                                                        <x-icon name="trash"
-                                                            class="w-5 h-5 text-red-500 hover:text-red-700" />
-                                                    </button>
-                                                </td>
+                                                @hasanyrole(['super-admin', 'admin'])
+                                                    <td colspan="2"
+                                                        class="px-6 py-4 whitespace-nowrap text-end text-sm font-medium space-x-2">
+                                                        <button x-on:click="$openModal('editStock')"
+                                                            wire:click="select({{ $stocks->id }})"
+                                                            class="cursor-pointer ">
+                                                            <x-icon name="pencil"
+                                                                class="w-5 h-5 text-blue-500 hover:text-blue-700" />
+                                                        </button>
+                                                        <button wire:click="delete({{ $stocks->id }})"
+                                                            class="cursor-pointer">
+                                                            <x-icon name="trash"
+                                                                class="w-5 h-5 text-red-500 hover:text-red-700" />
+                                                        </button>
+                                                    </td>
+                                                @endhasanyrole
                                             </tr>
                                         @empty
                                             <tr class="hover:bg-gray-200">

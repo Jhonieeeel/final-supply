@@ -23,7 +23,9 @@
                                         </svg>
                                     </div>
                                 </div>
-                                <x-button @click="$openModal('addSupply')" positive label="Add Supply" />
+                                @hasanyrole(['super-admin', 'admin'])
+                                    <x-button @click="$openModal('addSupply')" positive label="Add Supply" />
+                                @endhasanyrole
                             </div>
                             <div class="overflow-hidden">
                                 <table class="min-w-full divide-y divide-gray-200">
@@ -38,9 +40,11 @@
                                             <th scope="col"
                                                 class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">
                                                 Unit</th>
-                                            <th scope="col"
-                                                class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">
-                                                Action</th>
+                                            @hasanyrole(['super-admin', 'admin'])
+                                                <th scope="col"
+                                                    class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">
+                                                    Action</th>
+                                            @endhasanyrole
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-gray-200">
@@ -56,20 +60,23 @@
                                                     <x-badge flat color="{{ badgeColor($supply->unit) }}"
                                                         label="{{ $supply->unit }}" />
                                                 </td>
-                                                <td colspan="2"
-                                                    class="px-6 py-4 whitespace-nowrap text-end text-sm font-medium space-x-2">
-                                                    <button x-on:click="$openModal('editSupply')"
-                                                        wire:click="select({{ $supply->id }})"
-                                                        class="cursor-pointer ">
-                                                        <x-icon name="pencil"
-                                                            class="w-5 h-5 text-blue-500 hover:text-blue-700" />
-                                                    </button>
-                                                    <button wire:click="delete({{ $supply->id }})"
-                                                        class="cursor-pointer">
-                                                        <x-icon name="trash"
-                                                            class="w-5 h-5 text-red-500 hover:text-red-700" />
-                                                    </button>
-                                                </td>
+                                                @hasanyrole(['super-admin', 'admin'])
+                                                    <td colspan="2"
+                                                        class="px-6 py-4 whitespace-nowrap text-end text-sm font-medium space-x-2">
+                                                        <button x-on:click="$openModal('editSupply')"
+                                                            wire:click="select({{ $supply->id }})"
+                                                            class="cursor-pointer ">
+                                                            <x-icon name="pencil"
+                                                                class="w-5 h-5 text-blue-500 hover:text-blue-700" />
+                                                        </button>
+                                                        <button wire:click="delete({{ $supply->id }})"
+                                                            class="cursor-pointer">
+                                                            <x-icon name="trash"
+                                                                class="w-5 h-5 text-red-500 hover:text-red-700" />
+                                                        </button>
+                                                    @else
+                                                    </td>
+                                                @endhasanyrole
                                             </tr>
                                         @empty
                                             <tr class="hover:bg-gray-200">

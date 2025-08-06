@@ -18,7 +18,8 @@ class RequisitionTable extends Component
 
     public RequisitionForm $reqForm;
 
-    public function select($id) {
+    public function select($id)
+    {
         $this->dispatch('selectedRequisition', requisition: $id, tab: 'tab1');
     }
 
@@ -35,9 +36,9 @@ class RequisitionTable extends Component
     #[Layout('layouts.app')]
     public function render()
     {
-         return view('livewire.pages.afms.requisition-table', [
+        return view('livewire.pages.afms.requisition-table', [
             'requisitions' => Requisition::with('items')->paginate(5)
-         ]);
+        ]);
     }
 
     public function supplies(Request $request)
