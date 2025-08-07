@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Supply;
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -16,54 +15,45 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $superAdminRole = Role::create(['name' => 'super-admin']);
+        $adminRole = Role::create(['name' => 'admin']);
+        $employeeRole = Role::create(['name' => 'employee']);
 
-        $super = Role::create(['name' => 'super-admin']);
-        $admin = Role::create(['name' => 'admin']);
-        $employee = Role::create(['name' => 'employee']);
+        $canApprove = Permission::create(['name' => 'can approve']);
+        $canIssue = Permission::create(['name' => 'can issue']);
 
-        $approver = Permission::create(['name' => 'can approve']);
-        $issueance = Permission::create(['name' => 'can issue']);
+        $superAdminRole->syncPermissions([$canApprove, $canIssue]);
+        $adminRole->syncPermissions([$canApprove, $canIssue]);
 
-        $user = User::factory()->create([
-            'name' => 'Jhoniel Villacura',
+        $superAdminUser = User::factory()->create([
+            'name' => 'Dave Madayag',
             'email' => 'test@example.com',
         ]);
-        $user->assignRole($super);
-        $user->givePermissionTo($approver);
-        $user->givePermissionTo($issueance);
+        $superAdminUser->assignRole($superAdminRole);
 
-        $user_issueance = User::create([
-            'name' => 'issue',
+        $issuanceUser = User::create([
+            'name' => 'Ray Alingasa',
             'email' => 'issue@example.com',
-            'password' => 'password'
+            'password' => bcrypt('password'), // default na pass is = password
         ]);
-        $user_issueance->assignRole($admin);
-        $user_issueance->givePermissionTo($issueance);
-        $user_issueance->givePermissionTo($approver);
+        $issuanceUser->assignRole($adminRole);
 
-        Supply::create([
-            'name' => 'Alcohol 500ml',
-            'category' => 'Supplies',
-            'unit' => 'pc'
+        $employeeUser = User::create([
+            'name' => 'Jhoniel Villacura',
+            'email' => 'employee@example.com',
+            'password' => bcrypt('password'),
         ]);
+        $employeeUser->assignRole($employeeRole);
 
-        Supply::create([
-            'name' => 'Ballpen',
-            'category' => 'Supplies',
-            'unit' => 'pc'
-        ]);
+        $supplies = [
+            ['name' => 'Alcohol 500ml', 'category' => 'Supplies', 'unit' => 'pc'],
+            ['name' => 'Ballpen', 'category' => 'Supplies', 'unit' => 'pc'],
+            ['name' => 'Silhig', 'category' => 'Supplies', 'unit' => 'pc'],
+            ['name' => 'Dishwashing Liquid', 'category' => 'Supplies', 'unit' => 'bottle'],
+        ];
 
-        Supply::create([
-            'name' => 'Silhig',
-            'category' => 'Supplies',
-            'unit' => 'pc'
-        ]);
-
-        Supply::create([
-            'name' => 'Dishwashing Liquid',
-            'category' => 'Supplies',
-            'unit' => 'bottle'
-        ]);
+        foreach ($supplies as $supply) {
+            Supply::create($supply);
+        }
     }
 }

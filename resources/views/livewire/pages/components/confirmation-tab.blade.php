@@ -51,31 +51,67 @@
                                         <small class="text-gray-500 italic">Feature RIS not added yet</small>
                                         @hasanyrole(['super-admin', 'admin'])
                                             <div class="ml-auto">
-                                                <x-button icon="printer" positve label="RIS" />
+                                                <x-button icon="printer" positive label="RIS" />
                                             </div>
                                         @endhasanyrole
                                     </div>
                                     <div class="sm:flex sm:justify-between sm:items-start">
+                                        <div class="my-4 space-y-2">
+                                            <small class="text-gray-500 font-medium">Requested By</small>
+                                            <span class="block text-start">
+                                                <x-badge flat info
+                                                    label="{{ $items->first()->requisition->requestedBy->name }}" />
+                                            </span>
+                                        </div>
+                                        <div class="my-4 space-y-2">
+                                            <small class="text-gray-500 font-medium">Approved By</small>
+                                            <span class="block text-center">
+                                                @if (
+                                                    !$items->first()->requisition->approved_by &&
+                                                        auth()->user()->hasRole('super-admin') &&
+                                                        auth()->user()->can('can approve'))
+                                                    <x-button wire:click="approved({{ auth()->id() }})" 2xs spinner
+                                                        :color="$items->first()->requisition->approved_by
+                                                            ? 'info'
+                                                            : 'negative'"
+                                                        label="{{ $items->first()->requisition->approved_by ? $items->first()->requisition->approvedBy->name : 'approve' }}" />
+                                                @else
+                                                    <x-badge flat :color="$items->first()->requisition->approved_by
+                                                        ? 'info'
+                                                        : 'negative'"
+                                                        label="{{ $items->first()->requisition->approved_by ? $items->first()->requisition->approvedBy->name : 'pending' }}" />
+                                                @endif
+                                            </span>
+                                        </div>
+                                        <div class="my-4 space-y-2">
+                                            <small class="text-gray-500 font-medium">Issued By</small>
+                                            <span class="block text-start">
+                                                @if (
+                                                    !$items->first()->requisition->issued_by &&
+                                                        auth()->user()->hasRole('super-admin') &&
+                                                        auth()->user()->can('can issue'))
+                                                    <x-button wire:click="issued({{ $items->first()->requisition_id }})"
+                                                        2xs spinner :color="$items->first()->requisition->issued_by
+                                                            ? 'info'
+                                                            : 'negative'"
+                                                        label="{{ $items->first()->requisition->issued_by ? $items->first()->requisition->issuedBy->name : 'issue' }}" />
+                                                @else
+                                                    <x-badge flat :color="$items->first()->requisition->issued_by
+                                                        ? 'info'
+                                                        : 'negative'"
+                                                        label="{{ $items->first()->requisition->issued_by ? $items->first()->requisition->issuedBy->name : 'pending' }}" />
+                                                @endif
 
-                                        <div class="my-4 space-y-2">
-                                            <x-badge flat info label="Requested By" />
-                                            <small
-                                                class="block text-center text-gray-600">{{ $items->first()->requisition->requestedBy->name }}</small>
+                                            </span>
                                         </div>
                                         <div class="my-4 space-y-2">
-                                            <x-badge flat info label="Approved By" />
-                                            <small
-                                                class="block text-center  text-gray-600">{{ $items->first()->requisition->approvedBy->name ?? 'pending' }}</small>
-                                        </div>
-                                        <div class="my-4 space-y-2">
-                                            <x-badge flat info label="Issued By" />
-                                            <small
-                                                class="block text-center  text-gray-600">{{ $items->first()->requisition->issuedBy->name ?? 'pending' }}</small>
-                                        </div>
-                                        <div class="my-4 space-y-2">
-                                            <x-badge flat info label="Received By" />
-                                            <small
-                                                class="block text-center text-gray-600">{{ $items->first()->requisition->receivedBy->name ?? 'pending' }}</small>
+                                            <small class="text-gray-500 font-medium">Received By</small>
+                                            <span class="block text-start">
+                                                <x-badge flat :color="$items->first()->requisition->received_by
+                                                    ? 'info'
+                                                    : 'negative'"
+                                                    label="{{ $items->first()->requisition->received_by ? $items->first()->requisition->receivedBy->name : 'pending' }}" />
+                                            </span>
                                         </div>
                                     </div>
                                     <table class="w-full border border-gray-300 rounded">
@@ -98,8 +134,8 @@
                                                     Requested Quantity
                                                 </th>
                                                 @if (auth()->id() === $items->first()->requisition->requested_by ||
-                                                        auth()->user()->hasAnyRole(['admin', 'super-user']))
-                                                    <th scope="col"
+                                                        auth()->user()->hasAnyRole(['admin', 'super-admin']))
+                                                    <th spinner="delete" scope="col"
                                                         class="px-4 py-3 text-xs text-start text-gray-600 uppercase font-medium">
                                                         Action
                                                     </th>
@@ -110,7 +146,8 @@
                                             @foreach ($items as $item)
                                                 <tr>
                                                     <td class="px-4 py-3 text-xs font-medium">
-                                                        <x-checkbox wire:model.live="selectedItems.{{ $item->id }}"
+                                                        <x-checkbox
+                                                            wire:model.live="confirmedItems.{{ $item->id }}"
                                                             value="true" />
                                                     </td>
                                                     <td class="px-4 py-3 text-xs  font-medium">
@@ -122,14 +159,18 @@
                                                         <x-badge flat positive label="{{ $item->quantity }}" />
                                                     </td>
                                                     @if (auth()->id() === $item->requisition->requested_by ||
-                                                            auth()->user()->hasAnyRole(['admin', 'super-user']))
+                                                            auth()->user()->hasAnyRole(['admin', 'super-admin']))
                                                         <td colspan="2"
                                                             class="px-4 py-3 text-xs text-start font-medium">
+
                                                             <x-button x-on:click="$openModal('editRequisition')"
                                                                 wire:click="select({{ $item->id }})" 2xs info
                                                                 label="Edit" />
-                                                            <x-button wire:click="delete({{ $item->id }})" 2xs
-                                                                negative label="Delete" />
+
+                                                            <form wire:submit.prevent="delete({{ $item->id }})"
+                                                                class="inline-block">
+                                                                <x-button type="submit" 2xs negative label="Delete" />
+                                                            </form>
                                                         </td>
                                                     @endif
                                                 </tr>

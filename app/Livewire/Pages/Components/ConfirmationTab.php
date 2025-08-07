@@ -5,6 +5,7 @@ namespace App\Livewire\Pages\Components;
 use App\Livewire\Forms\RequisitionForm;
 use App\Models\Requisition;
 use App\Models\RequisitionItem;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Session;
@@ -19,7 +20,7 @@ class ConfirmationTab extends Component
     use WireUiActions;
 
     public $requisitions = [];
-    public $selectedItems = [];
+    public $confirmedItems = [];
 
     public $selectedRequisition;
     public $editRequisition;
@@ -31,16 +32,32 @@ class ConfirmationTab extends Component
     public RequisitionForm $reqForm;
 
 
+    public function issued($requisition_id)
+    {
+        $data = Requisition::find($requisition_id);
+        $data->update([
+            'issued_by' => Auth::id()
+        ]);
+    }
+
+    public function approved($requisition_id)
+    {
+        $data = Requisition::find($requisition_id);
+        $data->update([
+            'approved_by' => Auth::id()
+        ]);
+    }
+
     public function delete($requisition_id)
     {
         RequisitionItem::find($requisition_id)->delete();
-
-
         $this->notification()->send([
-            'icon' => 'success',
+            'icon' => 'trash',
             'title' => 'Deleted Successfully!',
             'description' => 'Stock deleted',
         ]);
+
+        $this->dispatch('selectedRequisition', requisition: $this->selectedRequisition, tab: $this->activeTab);
     }
 
     public function save()
@@ -48,7 +65,7 @@ class ConfirmationTab extends Component
         $this->reqForm->update($this->editRequisition);
 
         $this->notification()->send([
-            'icon' => 'success',
+            'icon' => 'arrow-path',
             'title' => 'Updated Successfully!',
             'description' => 'Supply updated.',
         ]);
@@ -69,6 +86,7 @@ class ConfirmationTab extends Component
     #[On('selectedRequisition')]
     public function setRequisition($requisition, $tab)
     {
+
         $this->selectedRequisition = $requisition;
         $this->activeTab = $tab;
 

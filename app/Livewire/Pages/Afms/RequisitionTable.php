@@ -8,6 +8,7 @@ use App\Models\RequisitionItem;
 use App\Models\Stock;
 use App\Models\Supply;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use WireUi\Traits\WireUiActions;
@@ -17,9 +18,13 @@ class RequisitionTable extends Component
     use WireUiActions;
 
     public RequisitionForm $reqForm;
+    public $selectedTab;
+    public $requisitionId;
 
     public function select($id)
     {
+        $this->selectedTab = 'tab1';
+        $this->requisitionId = $id;
         $this->dispatch('selectedRequisition', requisition: $id, tab: 'tab1');
     }
 
@@ -31,6 +36,10 @@ class RequisitionTable extends Component
             'title' => 'Created Successfully!',
             'description' => 'Requisition added',
         ]);
+
+        if ($this->requisitionId) {
+            $this->dispatch('selectedRequisition', requisition: Auth::id(), tab: 'tab1');
+        }
     }
 
     #[Layout('layouts.app')]
@@ -41,24 +50,17 @@ class RequisitionTable extends Component
         ]);
     }
 
-    public function supplies(Request $request)
+    public function getSupplies()
     {
-        $search = $request->get('search', '');
-
         $stocks = Stock::with('supply')
-            ->whereHas('supply', function ($query) use ($search) {
-                $query->where('name', 'like', "%{$search}%");
-            })
-            ->limit(10)
-            ->get();
-
-        return response()->json(
-            $stocks->map(function ($stock) {
+            ->get(['id', 'supply_id'])
+            ->map(function ($stock) {
                 return [
                     'id' => $stock->id,
                     'name' => $stock->supply->name,
                 ];
-            })
-        );
+            });
+
+        return $stocks->toArray();
     }
 }

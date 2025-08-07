@@ -1,4 +1,5 @@
 <div class="py-12">
+    <x-notifications position="top-end" />
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="bg-white overflow-hidden shadow-xs sm:rounded-lg">
             <div class="flex flex-col">
@@ -86,10 +87,11 @@
     </div>
 
     <x-modal-card title="Requisition" name="addRequisition" warning>
+
         <form>
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <x-select wire:model="reqForm.stock_id" warning label="Search a Stock"
-                    placeholder="Select item to request" :async-data="route('api.stocks.index')" option-label="name" option-value="id" />
+                    placeholder="Select item to request" :options="$this->getSupplies()" option-label="name" option-value="id" />
                 <x-number warning wire:model="reqForm.quantity" label="Request Quantity" placeholder="0" />
             </div>
 
