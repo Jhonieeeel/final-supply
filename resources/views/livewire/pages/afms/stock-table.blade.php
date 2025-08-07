@@ -51,30 +51,30 @@
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-gray-200">
-                                        @forelse ($stocks as $stocks)
+                                        @forelse ($stocks as $stock)
                                             <tr class="hover:bg-gray-50">
                                                 <td
                                                     class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
-                                                    {{ $stocks->supply->name }}</td>
+                                                    {{ $stock->supply->name }}</td>
                                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
-                                                    {{ $stocks->barcode }}
+                                                    {{ $stock->barcode }}
                                                 </td>
                                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
-                                                    <x-badge flat info label="{{ $stocks->quantity }}" />
+                                                    <x-badge flat info label="{{ $stock->quantity }}" />
                                                 </td>
                                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
-                                                    <x-badge flat warning label="₱ {{ $stocks->price }}" />
+                                                    <x-badge flat warning label="₱ {{ $stock->price }}" />
                                                 </td>
                                                 @hasanyrole(['super-admin', 'admin'])
                                                     <td colspan="2"
                                                         class="px-6 py-4 whitespace-nowrap text-end text-sm font-medium space-x-2">
                                                         <button x-on:click="$openModal('editStock')"
-                                                            wire:click="select({{ $stocks->id }})"
+                                                            wire:click="select({{ $stock->id }})"
                                                             class="cursor-pointer ">
                                                             <x-icon name="pencil"
                                                                 class="w-5 h-5 text-blue-500 hover:text-blue-700" />
                                                         </button>
-                                                        <button wire:click="delete({{ $stocks->id }})"
+                                                        <button wire:click="delete({{ $stock->id }})"
                                                             class="cursor-pointer">
                                                             <x-icon name="trash"
                                                                 class="w-5 h-5 text-red-500 hover:text-red-700" />
@@ -99,6 +99,7 @@
                 </div>
             </div>
         </div>
+        {{-- @dd($stocks) --}}
         <div class="sm:pt-4 p-6">
             {{ $stocks->links() }}
         </div>

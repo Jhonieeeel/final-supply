@@ -68,40 +68,38 @@ class RequisitionForm extends Form
 
         $userRequest = Requisition::with('items')->where('requested_by', Auth::id())->first();
 
-        if ($userRequest) {
+        if ($existingItem = $userRequest?->items->firstWhere('stock_id', $this->stock_id)) {
+            $currentQty = $existingItem->quantity + $this->quantity;
 
-            $existingItem = $userRequest->items->firstWhere('stock_id', $this->stock_id);
-
-            if ($existingItem) {
-
-                $currentQty = $existingItem->quantity + $this->quantity;
-
-                $existingItem->update([
-                    'quantity' => $currentQty,
-                ]);
-            } else {
-                RequisitionItem::create([
-                    'stock_id' => $this->stock_id,
-                    'quantity' => (int) $this->quantity,
-                    'requisition_id' => $userRequest->id,
-                ]);
-            }
-        } else {
-            $requisition = Requisition::create([
-                'ris' => $this->ris,
-                'owner_id' => Auth::id(),
-                'requested_by' => $this->requested_by,
-                'approved_by' => $this->approved_by,
-                'issued_by' => $this->issued_by,
-                'received_by' => $this->received_by,
+            $existingItem->update([
+                'quantity' => $currentQty,
             ]);
 
+            return;
+        } else {
             RequisitionItem::create([
                 'stock_id' => $this->stock_id,
                 'quantity' => (int) $this->quantity,
-                'requisition_id' => $requisition->id
+                'requisition_id' => $userRequest->id,
             ]);
+
+            return;
         }
+
+        $requisition = Requisition::create([
+            'ris' => $this->ris,
+            'owner_id' => Auth::id(),
+            'requested_by' => $this->requested_by,
+            'approved_by' => $this->approved_by,
+            'issued_by' => $this->issued_by,
+            'received_by' => $this->received_by,
+        ]);
+
+        RequisitionItem::create([
+            'stock_id' => $this->stock_id,
+            'quantity' => (int) $this->quantity,
+            'requisition_id' => $requisition->id
+        ]);
 
         $this->reset();
     }

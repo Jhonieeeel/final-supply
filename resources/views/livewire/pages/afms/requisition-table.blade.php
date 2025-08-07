@@ -56,7 +56,7 @@
                                                 <td
                                                     class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
                                                     <x-badge flat :color="$requisition->completed ? 'info' : 'negative'"
-                                                        label="{{ $requisition->completed ? 'Completed' : 'Pending' }}" />
+                                                        label="{{ $requisition->completed ? 'Approved' : 'Pending' }}" />
                                                 </td>
                                                 <td
                                                     class="px-6 text-end py-4 whitespace-nowrap text-sm font-medium text-blue-800">

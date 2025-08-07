@@ -70,7 +70,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                     </svg>
                 </div>
-                <div class="flex-1   text-center"></div>
+                <div class="flex-1 text-center"></div>
             </div>
             <div class="flex w-[30%]">
                 <div class="flex-1   border-r border-gray-700 text-center">5</div>
@@ -79,7 +79,7 @@
         </div>
         <div class="flex border-t border-gray-700 text-sm">
             <div class="flex w-1/2">
-                <div class="flex-1   border-r border-gray-700">Barcode-1001</div>
+                <div class="flex-1   border-r border-gray-700">Barcode-asdasdadasdasdasdas</div>
                 <div class="w-16   border-r border-gray-700 text-center">pc</div>
                 <div class="flex-1   border-r border-gray-700">Alcohol 50ml</div>
                 <div class="w-16   text-center">5</div>

@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
 class Requisition extends Model
 {
-
     public function owner()
     {
         return $this->belongsTo(User::class, 'owner_id');
@@ -32,5 +32,15 @@ class Requisition extends Model
     public function receivedBy()
     {
         return $this->belongsTo(User::class, "received_by");
+    }
+
+    protected static function booted()
+    {
+        static::saving(function ($stock) {
+            $stock->completed = $stock->requestedBy()->exists()
+                && $stock->approvedBy()->exists()
+                && $stock->issuedBy()->exists()
+                && $stock->receivedBy()->exists();
+        });
     }
 }
