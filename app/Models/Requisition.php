@@ -6,6 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Requisition extends Model
 {
+
+    public function owner()
+    {
+        return $this->belongsTo(User::class, 'owner_id');
+    }
+
     public function items()
     {
         return $this->hasMany(RequisitionItem::class);

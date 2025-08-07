@@ -56,59 +56,68 @@
                                         @endhasanyrole
                                     </div>
                                     <div class="sm:flex sm:justify-between sm:items-start">
+                                        {{-- requested by --}}
                                         <div class="my-4 space-y-2">
-                                            <small class="text-gray-500 font-medium">Requested By</small>
+                                            <small class="text-gray-700 font-medium">Requested By</small>
+                                            <button wire:click="confirm({{ $items->first()->requisition_id }})"
+                                                x-on:click="$openModal('selectRequest')" class="cursor-pointer">
+                                                <x-icon name="pencil-square"
+                                                    class="inline-block w-5 h-5 hover:text-gray-600 text-gray-500"
+                                                    solid />
+                                            </button>
                                             <span class="block text-start">
                                                 <x-badge flat info
-                                                    label="{{ $items->first()->requisition->requestedBy->name }}" />
+                                                    label="{{ $items->first()->requisition->requested_by ? $items->first()->requisition->requestedBy->name : $items->first()->requisition->owner->name }}" />
                                             </span>
                                         </div>
+                                        {{-- approved by --}}
                                         <div class="my-4 space-y-2">
-                                            <small class="text-gray-500 font-medium">Approved By</small>
-                                            <span class="block text-center">
-                                                @if (
-                                                    !$items->first()->requisition->approved_by &&
-                                                        auth()->user()->hasRole('super-admin') &&
-                                                        auth()->user()->can('can approve'))
-                                                    <x-button wire:click="approved({{ auth()->id() }})" 2xs spinner
-                                                        :color="$items->first()->requisition->approved_by
-                                                            ? 'info'
-                                                            : 'negative'"
-                                                        label="{{ $items->first()->requisition->approved_by ? $items->first()->requisition->approvedBy->name : 'approve' }}" />
-                                                @else
-                                                    <x-badge flat :color="$items->first()->requisition->approved_by
-                                                        ? 'info'
-                                                        : 'negative'"
-                                                        label="{{ $items->first()->requisition->approved_by ? $items->first()->requisition->approvedBy->name : 'pending' }}" />
-                                                @endif
-                                            </span>
-                                        </div>
-                                        <div class="my-4 space-y-2">
-                                            <small class="text-gray-500 font-medium">Issued By</small>
+                                            <small class="text-gray-700 font-medium">Approved By</small>
+                                            @if (auth()->user()->hasAnyRole(['super-admin', 'admin']))
+                                                <button wire:click="confirm({{ $items->first()->requisition_id }})"
+                                                    x-on:click="$openModal('selectApprover')" class="cursor-pointer">
+                                                    <x-icon name="pencil-square"
+                                                        class="inline-block w-5 h-5 hover:text-gray-600 text-gray-500"
+                                                        solid />
+                                                </button>
+                                            @endif
                                             <span class="block text-start">
-                                                @if (
-                                                    !$items->first()->requisition->issued_by &&
-                                                        auth()->user()->hasRole('super-admin') &&
-                                                        auth()->user()->can('can issue'))
-                                                    <x-button wire:click="issued({{ $items->first()->requisition_id }})"
-                                                        2xs spinner :color="$items->first()->requisition->issued_by
-                                                            ? 'info'
-                                                            : 'negative'"
-                                                        label="{{ $items->first()->requisition->issued_by ? $items->first()->requisition->issuedBy->name : 'issue' }}" />
-                                                @else
-                                                    <x-badge flat :color="$items->first()->requisition->issued_by
-                                                        ? 'info'
-                                                        : 'negative'"
-                                                        label="{{ $items->first()->requisition->issued_by ? $items->first()->requisition->issuedBy->name : 'pending' }}" />
-                                                @endif
-
+                                                <x-badge flat :color="$items->first()->requisition->approved_by
+                                                    ? 'positive'
+                                                    : 'negative'"
+                                                    label="{{ $items->first()->requisition->approved_by ? $items->first()->requisition->approvedBy->name : 'pending' }}" />
                                             </span>
                                         </div>
+                                        {{-- issued by --}}
                                         <div class="my-4 space-y-2">
-                                            <small class="text-gray-500 font-medium">Received By</small>
+                                            <small class="text-gray-700 font-medium">Issued By</small>
+                                            @if (auth()->user()->hasAnyRole(['super-admin', 'admin']))
+                                                <button wire:click="confirm({{ $items->first()->requisition_id }})"
+                                                    x-on:click="$openModal('selectIssuer')" class="cursor-pointer">
+                                                    <x-icon name="pencil-square"
+                                                        class="inline-block w-5 h-5 hover:text-gray-600 text-gray-500"
+                                                        solid />
+                                                </button>
+                                            @endif
+                                            <span class="block text-start">
+                                                <x-badge flat :color="$items->first()->requisition->issued_by
+                                                    ? 'positive'
+                                                    : 'negative'"
+                                                    label="{{ $items->first()->requisition->issued_by ? $items->first()->requisition->issuedBy->name : 'pending' }}" />
+                                            </span>
+                                        </div>
+                                        {{-- received by --}}
+                                        <div class="my-4 space-y-2">
+                                            <small class="text-gray-700 font-medium">Received By</small>
+                                            <button wire:click="confirm({{ $items->first()->requisition_id }})"
+                                                x-on:click="$openModal('selectReceiver')" class="cursor-pointer">
+                                                <x-icon name="pencil-square"
+                                                    class="inline-block w-5 h-5 hover:text-gray-600 text-gray-500"
+                                                    solid />
+                                            </button>
                                             <span class="block text-start">
                                                 <x-badge flat :color="$items->first()->requisition->received_by
-                                                    ? 'info'
+                                                    ? 'positive'
                                                     : 'negative'"
                                                     label="{{ $items->first()->requisition->received_by ? $items->first()->requisition->receivedBy->name : 'pending' }}" />
                                             </span>
@@ -133,7 +142,7 @@
                                                     class="px-4 py-3 text-xs text-start text-gray-600 uppercase font-medium">
                                                     Requested Quantity
                                                 </th>
-                                                @if (auth()->id() === $items->first()->requisition->requested_by ||
+                                                @if (auth()->id() === $items->first()->requisition->owner_id ||
                                                         auth()->user()->hasAnyRole(['admin', 'super-admin']))
                                                     <th spinner="delete" scope="col"
                                                         class="px-4 py-3 text-xs text-start text-gray-600 uppercase font-medium">
@@ -158,7 +167,7 @@
                                                     <td class="px-4 py-3 text-xs text-start font-medium">
                                                         <x-badge flat positive label="{{ $item->quantity }}" />
                                                     </td>
-                                                    @if (auth()->id() === $item->requisition->requested_by ||
+                                                    @if (auth()->id() === $item->requisition->owner_id ||
                                                             auth()->user()->hasAnyRole(['admin', 'super-admin']))
                                                         <td colspan="2"
                                                             class="px-4 py-3 text-xs text-start font-medium">
@@ -169,7 +178,8 @@
 
                                                             <form wire:submit.prevent="delete({{ $item->id }})"
                                                                 class="inline-block">
-                                                                <x-button type="submit" 2xs negative label="Delete" />
+                                                                <x-button type="submit" 2xs negative
+                                                                    label="Delete" />
                                                             </form>
                                                         </td>
                                                     @endif
@@ -189,12 +199,10 @@
             @endif
         </div>
     </div>
-    {{-- pt-5 --}}
+    {{-- edit requisition --}}
     <x-modal-card class="max-w-sm" title="Edit Requisition" name="editRequisition" warning>
-
         <form>
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-
                 <x-number warning wire:model="reqForm.quantity" label="Request Quantity" placeholder="0" />
             </div>
 
@@ -203,6 +211,76 @@
                     <x-button flat negative label="Cancel" x-on:click="close" />
 
                     <x-button positive spinner label="Save" wire:click.prevent="save" />
+                </div>
+            </x-slot>
+        </form>
+    </x-modal-card>
+
+    {{-- requestby --}}
+    <x-modal-card class="max-w-sm" title="Approved By" name="selectRequest" warning>
+        <form>
+            <x-select wire:model="reqForm.requested_by" label="Select User"
+                placeholder="Select a user for Requested By" :options="$this->getReceivers()" option-label="name" option-value="id"
+                searchable />
+
+            <x-slot name="footer" class="flex justify-between gap-x-4">
+                <div class="flex gap-x-4 ml-auto">
+                    <x-button flat negative label="Cancel" x-on:click="close" />
+                    <x-button positive spinner label="Save" wire:click="editRequisitions" />
+                </div>
+            </x-slot>
+        </form>
+    </x-modal-card>
+
+    {{-- approveby --}}
+    <x-modal-card class="max-w-sm" title="Approved By" name="selectApprover" warning>
+
+        <form>
+            <x-select wire:model="reqForm.approved_by" warning label="Search User"
+                pplaceholder="Select a user for Approved By" :options="$this->getReceivers()" option-label="name" option-value="id"
+                {{-- option-description="barcode"  --}} searchable />
+
+            <x-slot name="footer" class="flex justify-between gap-x-4">
+                <div class="flex gap-x-4 ml-auto">
+                    <x-button flat negative label="Cancel" x-on:click="close" />
+
+                    <x-button positive spinner label="Save" wire:click="editRequisitions" />
+                </div>
+            </x-slot>
+        </form>
+    </x-modal-card>
+
+    {{-- issue --}}
+    <x-modal-card class="max-w-sm" title="Issued By" name="selectIssuer" warning>
+
+        <form>
+            <x-select wire:model="reqForm.issued_by" warning label="Search a Stock"
+                placeholder="Select a user for Issued By" :options="$this->getReceivers()" option-label="name" option-value="id"
+                {{-- option-description="barcode"  --}} searchable />
+
+            <x-slot name="footer" class="flex justify-between gap-x-4">
+                <div class="flex gap-x-4 ml-auto">
+                    <x-button flat negative label="Cancel" x-on:click="close" />
+
+                    <x-button positive spinner label="Save" wire:click="editRequisitions" />
+                </div>
+            </x-slot>
+        </form>
+    </x-modal-card>
+
+    {{-- receiver --}}
+    <x-modal-card class="max-w-sm" title="Received By" name="selectReceiver" warning>
+
+        <form>
+            <x-select wire:model="reqForm.received_by" warning label="Search a Stock"
+                placeholder="Select a user for Received By" :options="$this->getReceivers()" option-label="name" option-value="id"
+                {{-- option-description="barcode"  --}} searchable />
+
+            <x-slot name="footer" class="flex justify-between gap-x-4">
+                <div class="flex gap-x-4 ml-auto">
+                    <x-button flat negative label="Cancel" x-on:click="close" />
+
+                    <x-button positive spinner label="Save" wire:click="editRequisitions" />
                 </div>
             </x-slot>
         </form>

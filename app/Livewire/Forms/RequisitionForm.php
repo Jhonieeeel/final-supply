@@ -15,6 +15,9 @@ class RequisitionForm extends Form
     public $ris;
 
     #[Validate(['nullable', 'exists:users,id'])]
+    public $requested_by;
+
+    #[Validate(['nullable', 'exists:users,id'])]
     public $approved_by;
 
     #[Validate(['nullable', 'exists:users,id'])]
@@ -31,6 +34,23 @@ class RequisitionForm extends Form
 
     #[Validate(['required', 'numeric'])]
     public $quantity;
+
+    public function updateRequisition(Requisition $requisition)
+    {
+        $this->validate([
+            'requested_by' => ['nullable', 'exists:users,id'],
+            'approved_by' => ['nullable', 'exists:users,id'],
+            'issued_by' => ['nullable', 'exists:users,id'],
+            'received_by' => ['nullable', 'exists:users,id'],
+        ]);
+        $requisition->update([
+            'ris' => $this->ris,
+            'requested_by' => $this->requested_by,
+            'approved_by' => $this->approved_by,
+            'issued_by' => $this->issued_by,
+            'received_by' => $this->received_by,
+        ]);
+    }
 
     public function update(RequisitionItem $requisition)
     {
@@ -69,7 +89,8 @@ class RequisitionForm extends Form
         } else {
             $requisition = Requisition::create([
                 'ris' => $this->ris,
-                'requested_by' => Auth::id(),
+                'owner_id' => Auth::id(),
+                'requested_by' => $this->requested_by,
                 'approved_by' => $this->approved_by,
                 'issued_by' => $this->issued_by,
                 'received_by' => $this->received_by,

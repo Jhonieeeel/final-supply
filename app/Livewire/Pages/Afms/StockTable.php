@@ -8,12 +8,14 @@ use App\Models\Supply;
 use Illuminate\Http\Request;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use Livewire\WithPagination;
 use WireUi\Traits\WireUiActions;
 
 class StockTable extends Component
 {
 
     use WireUiActions;
+    use WithPagination;
 
     public StockForm $stockForm;
 
@@ -62,29 +64,26 @@ class StockTable extends Component
     public function render()
     {
         return view('livewire.pages.afms.stock-table', [
-             'stocks' => Stock::with('supply')
-                ->whereHas('supply', function ($query) {
-                    $query->where('name', 'like', "%{$this->tableSearch}%");
-                })
-                ->limit(5)
-                ->paginate(5),
+            'stocks' => Stock::with('supply')
+                ->whereHas(
+                    'supply',
+                    fn($q) =>
+                    $q->where('name', 'like', '%' . $this->tableSearch . '%')
+                )
+                ->paginate(10),
         ]);
+
+        // return view('livewire.pages.afms.stock-table', [
+        //     'stocks' => Stock::with('supply')
+        //         ->whereHas('supply', function ($query) {
+        //             $query->where('name', 'like', "%{$this->tableSearch}%");
+        //         })
+        //         ->paginate(5),
+        // ]);
     }
 
     public function getSupplies()
     {
         return Supply::all(['id', 'name'])->toArray();
-    }
-
-    public function supplies(Request $request)
-    {
-
-        $search = $request->get('search', '');
-
-        return response()->json(
-            Supply::where('name', 'like', "%{$search}%")
-                ->limit(10)
-                ->get(['id', 'name'])
-        );
     }
 }

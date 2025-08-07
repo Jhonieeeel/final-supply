@@ -49,7 +49,7 @@
                                     </thead>
                                     <tbody class="divide-y divide-gray-200">
                                         @forelse ($supplies as $supply)
-                                            <tr class="hover:bg-gray-200 ">
+                                            <tr class="hover:bg-gray-50 ">
                                                 <td
                                                     class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
                                                     {{ $supply->name }}</td>
@@ -86,14 +86,17 @@
                                                 </td>
                                             </tr>
                                         @endforelse
-
                                     </tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
                 </div>
+
             </div>
+        </div>
+        <div class="sm:pt-4 p-6">
+            {{ $supplies->links() }}
         </div>
     </div>
     <x-modal-card title="Add Supply" name="addSupply" warning>

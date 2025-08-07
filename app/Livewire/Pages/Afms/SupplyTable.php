@@ -6,16 +6,17 @@ use App\Livewire\Forms\SupplyForm;
 use App\Models\Supply;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use Livewire\WithPagination;
 use WireUi\Traits\WireUiActions;
 
 class SupplyTable extends Component
 {
     use WireUiActions;
+    use WithPagination;
     public SupplyForm $supplyForm;
 
     public $search;
     public $selectedSupply;
-
 
     public function edit()
     {
@@ -58,7 +59,8 @@ class SupplyTable extends Component
     }
 
 
-    public function addModal() {
+    public function addModal()
+    {
         $this->dispatch('addSupply');
     }
 

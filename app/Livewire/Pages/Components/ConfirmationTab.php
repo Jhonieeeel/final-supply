@@ -5,6 +5,7 @@ namespace App\Livewire\Pages\Components;
 use App\Livewire\Forms\RequisitionForm;
 use App\Models\Requisition;
 use App\Models\RequisitionItem;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\On;
@@ -31,21 +32,28 @@ class ConfirmationTab extends Component
 
     public RequisitionForm $reqForm;
 
-
-    public function issued($requisition_id)
+    public function editRequisitions()
     {
-        $data = Requisition::find($requisition_id);
-        $data->update([
-            'issued_by' => Auth::id()
+        $this->reqForm->updateRequisition($this->editRequisition);
+
+        $this->notification()->send([
+            'icon' => 'success',
+            'title' => 'Updated Successfully!',
+            'description' => 'Requested By updated',
         ]);
     }
 
-    public function approved($requisition_id)
+
+    public function confirm($requisition_id)
     {
-        $data = Requisition::find($requisition_id);
-        $data->update([
-            'approved_by' => Auth::id()
-        ]);
+        $this->editRequisition = Requisition::find($requisition_id);
+        $this->reqForm->fill($this->editRequisition);
+    }
+
+
+    public function getReceivers()
+    {
+        return User::all(['id', 'name'])->toArray();
     }
 
     public function delete($requisition_id)
@@ -92,7 +100,7 @@ class ConfirmationTab extends Component
 
         $this->requisitions = RequisitionItem::with('stock.supply', 'requisition')
             ->whereHas('requisition', function ($query) {
-                $query->where('requested_by', $this->selectedRequisition);
+                $query->where('owner_id', $this->selectedRequisition);
             })
             ->get();
     }

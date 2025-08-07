@@ -31,7 +31,7 @@
                                         <tr>
                                             <th scope="col"
                                                 class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">
-                                                Requested By</th>
+                                                Owner</th>
                                             <th scope="col"
                                                 class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">
                                                 No. Requested Items</th>
@@ -48,7 +48,7 @@
                                             <tr class="hover:bg-gray-50">
                                                 <td
                                                     class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
-                                                    {{ $requisition->requestedBy->name }}</td>
+                                                    {{ $requisition->owner->name }}</td>
                                                 <td
                                                     class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
                                                     <x-badge flat amber label="{{ $requisition->items->count() }}" />
@@ -60,7 +60,7 @@
                                                 </td>
                                                 <td
                                                     class="px-6 text-end py-4 whitespace-nowrap text-sm font-medium text-blue-800">
-                                                    <x-button wire:click='select({{ $requisition->requested_by }})' 2xs
+                                                    <x-button wire:click='select({{ $requisition->owner_id }})' 2xs
                                                         positive outline label="View" icon="check" />
                                                 </td>
                                             </tr>
@@ -91,7 +91,8 @@
         <form>
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <x-select wire:model="reqForm.stock_id" warning label="Search a Stock"
-                    placeholder="Select item to request" :options="$this->getSupplies()" option-label="name" option-value="id" />
+                    placeholder="Select item to request" :options="$this->getSupplies()" option-label="name" option-value="id"
+                    option-description="barcode" searchable />
                 <x-number warning wire:model="reqForm.quantity" label="Request Quantity" placeholder="0" />
             </div>
 

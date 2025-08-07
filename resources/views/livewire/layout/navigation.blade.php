@@ -47,7 +47,8 @@ new class extends Component {
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6 gap-3">
                 <div class="text-sm font-medium">
-                    {{ auth()->user()->name }}
+                    {{ auth()->user()->name }} <span
+                        class="capitalize text-xs text-blue-600">({{ auth()->user()->getRoleNames()->first() }})</span>
                 </div>
                 <x-dropdown>
                     <x-dropdown.item label="Settings" />
