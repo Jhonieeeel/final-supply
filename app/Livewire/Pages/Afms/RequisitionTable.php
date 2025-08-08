@@ -10,6 +10,7 @@ use App\Models\Supply;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use WireUi\Traits\WireUiActions;
 
@@ -30,7 +31,7 @@ class RequisitionTable extends Component
 
     public function save()
     {
-        $this->reqForm->submit();
+        $this->reqForm->create();
         $this->notification()->send([
             'icon' => 'success',
             'title' => 'Created Successfully!',
@@ -42,6 +43,7 @@ class RequisitionTable extends Component
         }
     }
 
+    #[On('refresh-requisition-table')]
     #[Layout('layouts.app')]
     public function render()
     {

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('requisitions', function (Blueprint $table) {
             $table->id();
-            $table->string('ris')->nullable();
+            $table->string('ris')->nullable()->unique();
             $table->foreignId('owner_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('requested_by')->nullable()->constrained('users')->cascadeOnDelete();
             $table->foreignId('approved_by')->nullable()->constrained('users')->cascadeOnDelete();

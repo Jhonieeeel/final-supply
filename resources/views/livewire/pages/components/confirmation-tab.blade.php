@@ -51,7 +51,7 @@
                                         <small class="text-gray-500 italic">Feature RIS not added yet</small>
                                         @hasanyrole(['super-admin', 'admin'])
                                             <div class="ml-auto">
-                                                <x-button icon="printer" positive label="RIS" />
+                                                <x-button icon="printer" positive label=" Generate RIS" />
                                             </div>
                                         @endhasanyrole
                                     </div>
@@ -67,7 +67,7 @@
                                             </button>
                                             <span class="block text-start">
                                                 <x-badge flat info
-                                                    label="{{ $items->first()->requisition->requested_by ? $items->first()->requisition->requestedBy->name : $items->first()->requisition->owner->name }}" />
+                                                    label="{{ $items->first()->requisition->requested_by ? $items->first()->requisition->requestedBy->name : $items->first()->requisition->owner->name }} (default)" />
                                             </span>
                                         </div>
                                         {{-- approved by --}}
@@ -220,7 +220,7 @@
     <x-modal-card class="max-w-sm" title="Approved By" name="selectRequest" warning>
         <form>
             <x-select wire:model="reqForm.requested_by" label="Select User"
-                placeholder="Select a user for Requested By" :options="$this->getReceivers()" option-label="name" option-value="id"
+                placeholder="Select a user for Requested By" :options="$this->getUsers()" option-label="name" option-value="id"
                 searchable />
 
             <x-slot name="footer" class="flex justify-between gap-x-4">
@@ -236,8 +236,8 @@
     <x-modal-card class="max-w-sm" title="Approved By" name="selectApprover" warning>
 
         <form>
-            <x-select wire:model="reqForm.approved_by" warning label="Search User"
-                pplaceholder="Select a user for Approved By" :options="$this->getReceivers()" option-label="name" option-value="id"
+            <x-select wire:model="reqForm.approved_by" warning label="Search a Stock"
+                placeholder="Select a user for Approved By" :options="$this->getUsers()" option-label="name" option-value="id"
                 {{-- option-description="barcode"  --}} searchable />
 
             <x-slot name="footer" class="flex justify-between gap-x-4">
@@ -255,7 +255,7 @@
 
         <form>
             <x-select wire:model="reqForm.issued_by" warning label="Search a Stock"
-                placeholder="Select a user for Issued By" :options="$this->getReceivers()" option-label="name" option-value="id"
+                placeholder="Select a user for Issued By" :options="$this->getUsers()" option-label="name" option-value="id"
                 {{-- option-description="barcode"  --}} searchable />
 
             <x-slot name="footer" class="flex justify-between gap-x-4">
@@ -273,7 +273,7 @@
 
         <form>
             <x-select wire:model="reqForm.received_by" warning label="Search a Stock"
-                placeholder="Select a user for Received By" :options="$this->getReceivers()" option-label="name" option-value="id"
+                placeholder="Select a user for Received By" :options="$this->getUsers()" option-label="name" option-value="id"
                 {{-- option-description="barcode"  --}} searchable />
 
             <x-slot name="footer" class="flex justify-between gap-x-4">

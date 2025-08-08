@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Pages\Components;
 
+use App\Livewire\Forms\ConfirmationForm;
 use App\Livewire\Forms\RequisitionForm;
 use App\Models\Requisition;
 use App\Models\RequisitionItem;
@@ -31,10 +32,13 @@ class ConfirmationTab extends Component
     public $activeTab;
 
     public RequisitionForm $reqForm;
+    public ConfirmationForm $conForm;
 
     public function editRequisitions()
     {
+        $this->reqForm->fill($this->editRequisition);
         $this->reqForm->updateRequisition($this->editRequisition);
+        // $this->conForm->requestedBy($this->editRequisition);
 
         $this->notification()->send([
             'icon' => 'success',
@@ -51,7 +55,7 @@ class ConfirmationTab extends Component
     }
 
 
-    public function getReceivers()
+    public function getUsers()
     {
         return User::all(['id', 'name'])->toArray();
     }
@@ -77,6 +81,8 @@ class ConfirmationTab extends Component
             'title' => 'Updated Successfully!',
             'description' => 'Supply updated.',
         ]);
+
+        $this->dispatch('selectedRequisition', requisition: $this->selectedRequisition, tab: $this->activeTab);
     }
 
     public function select($id)

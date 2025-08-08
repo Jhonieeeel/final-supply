@@ -5,8 +5,11 @@ namespace App\Livewire\Forms;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Requisition;
 use App\Models\RequisitionItem;
+use App\Models\Stock;
 use Livewire\Attributes\Validate;
 use Livewire\Form;
+
+use function PHPSTORM_META\map;
 
 class RequisitionForm extends Form
 {
@@ -35,14 +38,11 @@ class RequisitionForm extends Form
     #[Validate(['required', 'numeric'])]
     public $quantity;
 
+
     public function updateRequisition(Requisition $requisition)
     {
-        $this->validate([
-            'requested_by' => ['nullable', 'exists:users,id'],
-            'approved_by' => ['nullable', 'exists:users,id'],
-            'issued_by' => ['nullable', 'exists:users,id'],
-            'received_by' => ['nullable', 'exists:users,id'],
-        ]);
+        $this->validate();
+
         $requisition->update([
             'ris' => $this->ris,
             'requested_by' => $this->requested_by,
@@ -50,6 +50,15 @@ class RequisitionForm extends Form
             'issued_by' => $this->issued_by,
             'received_by' => $this->received_by,
         ]);
+
+        if ($this->requested_by) {
+            foreach ($requisition->items as $item) {
+                $stock = Stock::find($item->stock_id);
+                $stock->update([
+                    'quantity' => $stock->quantity -= $item->quantity
+                ]);
+            }
+        }
     }
 
     public function update(RequisitionItem $requisition)
@@ -62,45 +71,56 @@ class RequisitionForm extends Form
         ]);
     }
 
-    public function submit()
+    public function create()
     {
-        $this->validate();
+        $requisition = Requisition::where('ris', $this->ris)->orWhere('owner_id', Auth::id())->get();
 
-        $userRequest = Requisition::with('items')->where('requested_by', Auth::id())->first();
+        if ($requisition) {
+            // check if thers existing items 
 
-        if ($existingItem = $userRequest?->items->firstWhere('stock_id', $this->stock_id)) {
-            $currentQty = $existingItem->quantity + $this->quantity;
-
-            $existingItem->update([
-                'quantity' => $currentQty,
-            ]);
-
-            return;
-        } else {
-            RequisitionItem::create([
-                'stock_id' => $this->stock_id,
-                'quantity' => (int) $this->quantity,
-                'requisition_id' => $userRequest->id,
-            ]);
-
-            return;
         }
 
-        $requisition = Requisition::create([
+        $this->validate();
+
+        $newRequisition = Requisition::create([
             'ris' => $this->ris,
             'owner_id' => Auth::id(),
-            'requested_by' => $this->requested_by,
+            'requested_by' => Auth::id(),
             'approved_by' => $this->approved_by,
             'issued_by' => $this->issued_by,
-            'received_by' => $this->received_by,
+            'received_by' => $this->received_by
         ]);
 
-        RequisitionItem::create([
+        return RequisitionItem::create([
             'stock_id' => $this->stock_id,
-            'quantity' => (int) $this->quantity,
-            'requisition_id' => $requisition->id
+            'quantity' => $this->quantity,
+            'requisition_id' => $newRequisition->id
         ]);
-
-        $this->reset();
     }
+
+    // public function submit()
+    // {
+    //     $requisition = Requisition::firstOrCreate(
+    //         ['owner_id' => Auth::id()],
+    //         [
+    //             'ris' => $this->ris,
+    //             'requested_by' => Auth::id(),
+    //             'approved_by' => $this->approved_by,
+    //             'issued_by' => $this->issued_by,
+    //             'received_by' => $this->received_by
+    //         ]
+    //     );
+
+    //     $existingItem = $requisition->items->firstWhere('stock_id', $this->stock_id);
+
+    //     if ($existingItem) {
+    //         return $existingItem->increment('quantity', $this->quantity);
+    //     }
+
+    //     return $requisition->items()->create([
+    //         'stock_id' => $this->stock_id,
+    //         'quantity' => $this->quantity,
+    //         'requisition_id' => $requisition->id
+    //     ]);
+    // }
 }
