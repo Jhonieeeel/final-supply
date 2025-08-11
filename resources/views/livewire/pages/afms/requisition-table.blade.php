@@ -56,7 +56,7 @@
                                                 <td
                                                     class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
                                                     <x-badge flat :color="$requisition->completed ? 'info' : 'negative'"
-                                                        label="{{ $requisition->completed ? 'Approved' : 'Pending' }}" />
+                                                        label="{{ $requisition->completed ? 'Confirmed' : 'Pending' }}" />
                                                 </td>
                                                 <td
                                                     class="px-6 text-end py-4 whitespace-nowrap text-sm font-medium text-blue-800">
@@ -92,7 +92,7 @@
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <x-select wire:model="reqForm.stock_id" warning label="Search a Stock"
                     placeholder="Select item to request" :options="$this->getSupplies()" option-label="name" option-value="id"
-                    option-description="barcode" searchable />
+                    option-description="quantity" searchable />
                 <x-number warning wire:model="reqForm.quantity" label="Request Quantity" placeholder="0" />
             </div>
 

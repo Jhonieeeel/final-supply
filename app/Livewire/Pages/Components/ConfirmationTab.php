@@ -2,19 +2,19 @@
 
 namespace App\Livewire\Pages\Components;
 
-use App\Livewire\Forms\ConfirmationForm;
 use App\Livewire\Forms\RequisitionForm;
 use App\Models\Requisition;
 use App\Models\RequisitionItem;
+use App\Models\RequisitionSlip;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
+use App\Services\ConvertWordToPdfService;
+use App\Services\GenerateWordService;
 use Livewire\Attributes\On;
-use Livewire\Attributes\Session;
 use Livewire\Component;
+
 use WireUi\Traits\WireUiActions;
 
-use function PHPUnit\Framework\isEmpty;
+
 
 class ConfirmationTab extends Component
 {
@@ -32,28 +32,53 @@ class ConfirmationTab extends Component
     public $activeTab;
 
     public RequisitionForm $reqForm;
-    public ConfirmationForm $conForm;
 
-    public function editRequisitions()
+
+    public function generateWord()
     {
-        $this->reqForm->fill($this->editRequisition);
+        // dd(RequisitionSlip::all());
+        $generateRequisition = Requisition::find($this->selectedRequisition);
+
+        // word
+        $word = new GenerateWordService();
+        $docx = $word->writeDocument($generateRequisition);
+
+        // pdf 
+        $converter = new ConvertWordToPdfService();
+        $pdf = $converter->convert($docx);
+
+        if (!file_exists(storage_path($pdf['requisition_file']))) {
+            RequisitionSlip::create([
+                'requisition_file' => 'public/' . $pdf['file_name'],
+                'requisition_id' => $this->selectedRequisition,
+            ]);
+
+            $this->notification()->send([
+                'icon' => 'check',
+                'title' => 'Requisition Slip Generated Successfully!',
+                'description' => 'Requisition slip has been generated.',
+            ]);
+        }
+    }
+
+    public function updateConfirm()
+    {
         $this->reqForm->updateRequisition($this->editRequisition);
-        // $this->conForm->requestedBy($this->editRequisition);
 
         $this->notification()->send([
-            'icon' => 'success',
-            'title' => 'Updated Successfully!',
-            'description' => 'Requested By updated',
+            'icon' => 'check',
+            'title' => 'Confirmed Successfully!',
+            'description' => 'Requisition confirmed.',
         ]);
+
+        $this->dispatch('selectedRequisition', requisition: $this->selectedRequisition, tab: $this->activeTab);
     }
 
-
-    public function confirm($requisition_id)
+    public function confirm($id)
     {
-        $this->editRequisition = Requisition::find($requisition_id);
+        $this->editRequisition = Requisition::find($id);
         $this->reqForm->fill($this->editRequisition);
     }
-
 
     public function getUsers()
     {
@@ -94,7 +119,14 @@ class ConfirmationTab extends Component
     public function changeTab($tab)
     {
         $this->activeTab = $tab;
-        $this->dispatch('selectedRequisition', requisition: $this->selectedRequisition, tab: $tab);
+
+        if ($tab === 'tab1') {
+            return $this->dispatch('selectedRequisition', requisition: $this->selectedRequisition, tab: $tab);
+        }
+
+        $this->dispatch('renderPdf', [
+            'requisition' => $this->selectedRequisition,
+        ])->to('pages.components.requisition-slip');
     }
 
     #[On('selectedRequisition')]

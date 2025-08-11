@@ -55,12 +55,12 @@ class RequisitionTable extends Component
     public function getSupplies()
     {
         $stocks = Stock::with('supply')
-            ->get(['id', 'supply_id', 'barcode'])
+            ->get(['id', 'supply_id', 'quantity'])
             ->map(function ($stock) {
                 return [
                     'id' => $stock->id,
                     'name' => $stock->supply->name,
-                    'barcode' => $stock->barcode
+                    'quantity' => "Available: {$stock->quantity} pcs", // formatted
                 ];
             });
         return $stocks->toArray();

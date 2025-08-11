@@ -6,13 +6,14 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Requisition;
 use App\Models\RequisitionItem;
 use App\Models\Stock;
+use App\Models\User;
 use Livewire\Attributes\Validate;
 use Livewire\Form;
 
-use function PHPSTORM_META\map;
 
 class RequisitionForm extends Form
 {
+    // RIS FORMAT = RIS-YEAR-MONTH-DAY-0001
     // request
     #[Validate(['nullable', 'min:6'])]
     public $ris;
@@ -35,30 +36,19 @@ class RequisitionForm extends Form
     #[Validate(['nullable', 'exists:requisitions,id'])]
     public $requisition_id;
 
-    #[Validate(['required', 'numeric'])]
+    #[Validate(['required', 'numeric', 'min:1'])]
     public $quantity;
 
 
     public function updateRequisition(Requisition $requisition)
     {
-        $this->validate();
-
-        $requisition->update([
+        return $requisition->update([
             'ris' => $this->ris,
             'requested_by' => $this->requested_by,
             'approved_by' => $this->approved_by,
             'issued_by' => $this->issued_by,
             'received_by' => $this->received_by,
         ]);
-
-        if ($this->requested_by) {
-            foreach ($requisition->items as $item) {
-                $stock = Stock::find($item->stock_id);
-                $stock->update([
-                    'quantity' => $stock->quantity -= $item->quantity
-                ]);
-            }
-        }
     }
 
     public function update(RequisitionItem $requisition)
@@ -71,56 +61,36 @@ class RequisitionForm extends Form
         ]);
     }
 
+
+    // create new requisition or update existing one
     public function create()
     {
-        $requisition = Requisition::where('ris', $this->ris)->orWhere('owner_id', Auth::id())->get();
+        $requisition = Requisition::where('owner_id', Auth::id())->where('completed', false)->first();
 
         if ($requisition) {
-            // check if thers existing items 
-
+            $item = $requisition->items()->where('stock_id', $this->stock_id)->first();
+            return $requisition->items()->updateOrCreate(
+                ['stock_id' => $this->stock_id],
+                ['quantity' => ($item?->quantity + $this->quantity)]
+            );
         }
-
-        $this->validate();
 
         $newRequisition = Requisition::create([
             'ris' => $this->ris,
             'owner_id' => Auth::id(),
             'requested_by' => Auth::id(),
-            'approved_by' => $this->approved_by,
-            'issued_by' => $this->issued_by,
+            'approved_by' => User::where('name', 'Dave Madayag')->first()->id,
+            'issued_by' => User::where('name', 'Ray Alingasa')->first()->id,
             'received_by' => $this->received_by
         ]);
 
-        return RequisitionItem::create([
+        $newRequisition->items()->create([
             'stock_id' => $this->stock_id,
-            'quantity' => $this->quantity,
-            'requisition_id' => $newRequisition->id
+            'quantity' => $this->quantity
         ]);
+
+        $this->reset();
+
+        return;
     }
-
-    // public function submit()
-    // {
-    //     $requisition = Requisition::firstOrCreate(
-    //         ['owner_id' => Auth::id()],
-    //         [
-    //             'ris' => $this->ris,
-    //             'requested_by' => Auth::id(),
-    //             'approved_by' => $this->approved_by,
-    //             'issued_by' => $this->issued_by,
-    //             'received_by' => $this->received_by
-    //         ]
-    //     );
-
-    //     $existingItem = $requisition->items->firstWhere('stock_id', $this->stock_id);
-
-    //     if ($existingItem) {
-    //         return $existingItem->increment('quantity', $this->quantity);
-    //     }
-
-    //     return $requisition->items()->create([
-    //         'stock_id' => $this->stock_id,
-    //         'quantity' => $this->quantity,
-    //         'requisition_id' => $requisition->id
-    //     ]);
-    // }
 }

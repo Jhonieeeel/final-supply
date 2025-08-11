@@ -7,6 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Requisition extends Model
 {
+
+    public function slips()
+    {
+        return $this->hasOne(RequisitionSlip::class);
+    }
+
     public function owner()
     {
         return $this->belongsTo(User::class, 'owner_id');
@@ -36,11 +42,16 @@ class Requisition extends Model
 
     protected static function booted()
     {
-        static::saving(function ($stock) {
-            $stock->completed = $stock->requestedBy()->exists()
-                && $stock->approvedBy()->exists()
-                && $stock->issuedBy()->exists()
-                && $stock->receivedBy()->exists();
+        static::saving(function ($requisition) {
+            if (
+                $requisition->requestedBy()->exists()
+                && $requisition->approvedBy()->exists()
+                && $requisition->issuedBy()->exists()
+                && $requisition->receivedBy()->exists()
+            ) {
+                /// RIS FORMAT = RIS-YEAR-MONTH-DAY-0001
+                $requisition->ris = 'RIS-' . now()->format('Y-m-d') . '-' . str_pad($requisition->id, 4, '0', STR_PAD_LEFT);
+            }
         });
     }
 }
