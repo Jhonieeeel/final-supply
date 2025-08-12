@@ -26,12 +26,14 @@ class RequisitionTable extends Component
     {
         $this->selectedTab = 'tab1';
         $this->requisitionId = $id;
-        $this->dispatch('selectedRequisition', requisition: $id, tab: 'tab1');
+        $this->dispatch('selectedRequisition', owner_id: $id, tab: 'tab1');
     }
 
     public function save()
     {
         $this->reqForm->create();
+
+
         $this->notification()->send([
             'icon' => 'success',
             'title' => 'Created Successfully!',
@@ -39,8 +41,10 @@ class RequisitionTable extends Component
         ]);
 
         if ($this->requisitionId) {
-            $this->dispatch('selectedRequisition', requisition: Auth::id(), tab: 'tab1');
+            $this->dispatch('selectedRequisition', owner_id: Auth::id(), tab: 'tab1');
         }
+
+        $this->dispatch('close-wireui-modal:add-requisition');
     }
 
     #[On('refresh-requisition-table')]
@@ -48,7 +52,9 @@ class RequisitionTable extends Component
     public function render()
     {
         return view('livewire.pages.afms.requisition-table', [
-            'requisitions' => Requisition::with('items')->paginate(5)
+            'requisitions' => Requisition::with('items')
+                ->has('items') // only requisitions with at least 1 item
+                ->paginate(5)
         ]);
     }
 

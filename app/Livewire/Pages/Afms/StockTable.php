@@ -31,6 +31,8 @@ class StockTable extends Component
             'title' => 'Updated Successfully!',
             'description' => 'Supply updated.',
         ]);
+
+        $this->dispatch('close-wireui-modal:edit-stock');
     }
 
     public function select($stock_id)
@@ -58,19 +60,21 @@ class StockTable extends Component
             'title' => 'Created Successfully!',
             'description' => 'Stock added',
         ]);
+
+        $this->dispatch('close-wireui-modal:add-stock');
     }
 
     #[Layout('layouts.app')]
     public function render()
     {
         $stocks = Stock::with('supply')
-                ->whereHas(
-                    'supply',
-                    fn($q) =>
-                    $q->where('name', 'like', '%' . $this->tableSearch . '%')
-                )
-                ->paginate(10);
-        
+            ->whereHas(
+                'supply',
+                fn($q) =>
+                $q->where('name', 'like', '%' . $this->tableSearch . '%')
+            )
+            ->paginate(10);
+
 
         return view('livewire.pages.afms.stock-table', [
             'stocks' => $stocks,

@@ -6,7 +6,7 @@ class ConvertWordToPdfService
 {
     public function convert($filepath)
     {
-        $outputPath = storage_path('app/public');
+        $outputPath = storage_path('app/public/requisition_slip/');
         $docx = pathinfo($filepath, PATHINFO_FILENAME);
         $pdfPath = "{$outputPath}/{$docx}.pdf";
 
@@ -31,6 +31,8 @@ class ConvertWordToPdfService
         if (file_exists($filepath)) {
             unlink($filepath);
         }
+
+
 
         return [
             'pdf_path' => $pdfPath,

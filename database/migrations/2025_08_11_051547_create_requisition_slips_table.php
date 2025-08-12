@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('requisition_file')->nullable();
             $table->foreignId('requisition_id')->constrained()->cascadeOnDelete();
+            $table->boolean('is_approved')->default(false);
             $table->timestamps();
         });
     }

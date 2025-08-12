@@ -59,6 +59,10 @@ class RequisitionForm extends Form
             'quantity' => $this->quantity,
             'requisition_id' => $this->requisition_id
         ]);
+
+
+
+        return;
     }
 
 
@@ -67,12 +71,15 @@ class RequisitionForm extends Form
     {
         $requisition = Requisition::where('owner_id', Auth::id())->where('completed', false)->first();
 
-        if ($requisition) {
+        if ($requisition && $requisition->items()->exists()) {
             $item = $requisition->items()->where('stock_id', $this->stock_id)->first();
-            return $requisition->items()->updateOrCreate(
+            $requisition->items()->updateOrCreate(
                 ['stock_id' => $this->stock_id],
                 ['quantity' => ($item?->quantity + $this->quantity)]
             );
+
+            $this->reset();
+            return;
         }
 
         $newRequisition = Requisition::create([

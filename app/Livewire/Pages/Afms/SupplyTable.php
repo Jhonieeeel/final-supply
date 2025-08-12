@@ -27,6 +27,8 @@ class SupplyTable extends Component
             'title' => 'Updated Successfully!',
             'description' => 'Supply updated.',
         ]);
+
+        $this->dispatch('close-wireui-modal:edit-supply');
     }
 
     public function select($supply_id)
@@ -56,6 +58,8 @@ class SupplyTable extends Component
         ]);
 
         $this->supplyForm->reset();
+
+        $this->dispatch('close-wireui-modal:add-supply');
     }
 
 

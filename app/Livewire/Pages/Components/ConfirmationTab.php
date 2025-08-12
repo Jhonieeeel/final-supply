@@ -3,6 +3,7 @@
 namespace App\Livewire\Pages\Components;
 
 use App\Livewire\Forms\RequisitionForm;
+use App\Livewire\Forms\RequisitionSlipForm;
 use App\Models\Requisition;
 use App\Models\RequisitionItem;
 use App\Models\RequisitionSlip;
@@ -26,31 +27,31 @@ class ConfirmationTab extends Component
 
     public $selectedRequisition;
     public $editRequisition;
+    public $pdf;
 
     public $requisitionStatus = false;
 
     public $activeTab;
+    public $activeModal;
 
     public RequisitionForm $reqForm;
-
+    public RequisitionSlipForm $slipform;
 
     public function generateWord()
     {
-        // dd(RequisitionSlip::all());
-        $generateRequisition = Requisition::find($this->selectedRequisition);
+        $requisitionData = Requisition::find($this->selectedRequisition);
 
-        // word
+        // docx
         $word = new GenerateWordService();
-        $docx = $word->writeDocument($generateRequisition);
+        $docx = $word->writeDocument($requisitionData);
 
         // pdf 
         $converter = new ConvertWordToPdfService();
         $pdf = $converter->convert($docx);
 
-        if (!file_exists(storage_path($pdf['requisition_file']))) {
-            RequisitionSlip::create([
-                'requisition_file' => 'public/' . $pdf['file_name'],
-                'requisition_id' => $this->selectedRequisition,
+        if (!file_exists(storage_path($pdf['pdf_path']))) {
+            $requisitionData->update([
+                'requisition_pdf' => 'requisition_slip/' . $pdf['file_name']
             ]);
 
             $this->notification()->send([
@@ -58,6 +59,8 @@ class ConfirmationTab extends Component
                 'title' => 'Requisition Slip Generated Successfully!',
                 'description' => 'Requisition slip has been generated.',
             ]);
+
+            return;
         }
     }
 
@@ -70,8 +73,9 @@ class ConfirmationTab extends Component
             'title' => 'Confirmed Successfully!',
             'description' => 'Requisition confirmed.',
         ]);
+        $this->dispatch("close-wireui-modal:{$this->activeModal}");
 
-        $this->dispatch('selectedRequisition', requisition: $this->selectedRequisition, tab: $this->activeTab);
+        $this->dispatch('selectedRequisition', owner_id: $this->selectedRequisition, tab: $this->activeTab);
     }
 
     public function confirm($id)
@@ -91,10 +95,11 @@ class ConfirmationTab extends Component
         $this->notification()->send([
             'icon' => 'trash',
             'title' => 'Deleted Successfully!',
-            'description' => 'Stock deleted',
         ]);
 
-        $this->dispatch('selectedRequisition', requisition: $this->selectedRequisition, tab: $this->activeTab);
+        $this->dispatch('refresh-requisition-table');
+
+        $this->dispatch('selectedRequisition', owner_id: $this->selectedRequisition, tab: $this->activeTab);
     }
 
     public function save()
@@ -104,10 +109,11 @@ class ConfirmationTab extends Component
         $this->notification()->send([
             'icon' => 'arrow-path',
             'title' => 'Updated Successfully!',
-            'description' => 'Supply updated.',
+            'description' => 'Item updated.',
         ]);
 
-        $this->dispatch('selectedRequisition', requisition: $this->selectedRequisition, tab: $this->activeTab);
+
+        $this->dispatch('selectedRequisition', owner_id: $this->selectedRequisition, tab: $this->activeTab);
     }
 
     public function select($id)
@@ -120,20 +126,18 @@ class ConfirmationTab extends Component
     {
         $this->activeTab = $tab;
 
-        if ($tab === 'tab1') {
-            return $this->dispatch('selectedRequisition', requisition: $this->selectedRequisition, tab: $tab);
+        if ($tab === 'tab2') {
+            $this->pdf = Requisition::find($this->selectedRequisition)->first();
         }
 
-        $this->dispatch('renderPdf', [
-            'requisition' => $this->selectedRequisition,
-        ])->to('pages.components.requisition-slip');
+        $this->dispatch('selectedRequisition', owner_id: $this->selectedRequisition, tab: $tab);
     }
 
     #[On('selectedRequisition')]
-    public function setRequisition($requisition, $tab)
+    public function setRequisition($owner_id, $tab)
     {
 
-        $this->selectedRequisition = $requisition;
+        $this->selectedRequisition = $owner_id;
         $this->activeTab = $tab;
 
         $this->requisitions = RequisitionItem::with('stock.supply', 'requisition')

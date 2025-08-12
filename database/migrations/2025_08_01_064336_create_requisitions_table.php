@@ -25,6 +25,7 @@ return new class extends Migration
             $table->foreignId('issued_by')->nullable()->constrained('users')->cascadeOnDelete();
             $table->foreignId('received_by')->nullable()->constrained('users')->cascadeOnDelete();
             $table->string('received_by_name')->nullable();
+            $table->string('requisition_pdf')->nullable();
             $table->boolean('completed')->default(false);
             $table->timestamps();
         });

@@ -24,7 +24,8 @@
                                     </div>
                                 </div>
                                 @hasanyrole(['super-admin', 'admin'])
-                                    <x-button x-on:click="$openModal('addStock')" positive label="Add stocks" />
+                                    <x-button icon="plus" x-on:click="$openModal('addStock')" positive
+                                        label="Add stocks" />
                                 @endhasanyrole
                             </div>
                             <div class="overflow-hidden">

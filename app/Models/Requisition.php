@@ -4,25 +4,23 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Requisition extends Model
 {
 
     public function slips()
     {
-        return $this->hasOne(RequisitionSlip::class);
+        return $this->hasMany(RequisitionSlip::class);
     }
-
     public function owner()
     {
         return $this->belongsTo(User::class, 'owner_id');
     }
-
     public function items()
     {
         return $this->hasMany(RequisitionItem::class);
     }
-
     public function requestedBy()
     {
         return $this->belongsTo(User::class, "requested_by");
@@ -49,8 +47,15 @@ class Requisition extends Model
                 && $requisition->issuedBy()->exists()
                 && $requisition->receivedBy()->exists()
             ) {
-                /// RIS FORMAT = RIS-YEAR-MONTH-DAY-0001
-                $requisition->ris = 'RIS-' . now()->format('Y-m-d') . '-' . str_pad($requisition->id, 4, '0', STR_PAD_LEFT);
+
+                $date = now()->format('Y-m-d');
+                $numberOfRequisition = Requisition::where('owner_id', Auth::id())
+                    ->count() + 1;
+
+                $userId = Auth::id();
+                $format = "RIS-{$userId}-{$date}-{$numberOfRequisition}";
+
+                $requisition->ris = $format;
             }
         });
     }

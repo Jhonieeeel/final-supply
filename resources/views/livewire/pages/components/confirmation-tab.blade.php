@@ -46,18 +46,15 @@
                             <div class="p-4">
                                 <div class="w-full space-y-5">
                                     <div class="sm:flex gap-x-12 items-center">
-                                        <x-badge md icon="shopping-cart" positive flat label="Requisition Details" />
-                                        <small class="text-gray-500 italic">Feature RIS not added yet</small>
-                                        @hasanyrole(['super-admin', 'admin'])
-                                            <div class="ml-auto">
-                                                <x-button :disabled="!(
-                                                    $items->first()->requisition->approved_by &&
-                                                    $items->first()->requisition->issued_by &&
-                                                    $items->first()->requisition->received_by
-                                                )" spinner wire:click="generateWord" icon="printer"
-                                                    positive label=" Generate RIS" />
-                                            </div>
-                                        @endhasanyrole
+                                        <h3 class="font-medium text-xl text-gray-700">Requisition Form</h3>
+                                        <div class="ml-auto">
+                                            <x-button :disabled="!(
+                                                $items->first()->requisition->approved_by &&
+                                                $items->first()->requisition->issued_by &&
+                                                $items->first()->requisition->received_by
+                                            )" spinner wire:click="generateWord" icon="printer"
+                                                positive label=" Generate RIS" />
+                                        </div>
                                     </div>
                                     <div class="sm:flex sm:justify-between sm:items-start">
                                         {{-- requested by --}}
@@ -65,7 +62,8 @@
                                             <small class="text-gray-700 font-medium">Requested By</small>
 
                                             <button wire:click="confirm({{ $items->first()->requisition->id }})"
-                                                x-on:click="$openModal('selectRequester')" class="cursor-pointer">
+                                                x-on:click="$wire.activeModal = 'select-requester'; $openModal('selectRequester')"
+                                                class="cursor-pointer">
                                                 <x-icon name="pencil-square"
                                                     class="inline-block w-5 h-5 hover:text-gray-600 text-gray-500"
                                                     solid />
@@ -80,7 +78,8 @@
                                             <small class="text-gray-700 font-medium">Approved By</small>
                                             @if (auth()->user()->hasAnyRole(['super-admin', 'admin']))
                                                 <button wire:click="confirm({{ $items->first()->requisition->id }})"
-                                                    x-on:click="$openModal('selectApprover')" class="cursor-pointer">
+                                                    x-on:click="$wire.activeModal = 'select-approver'; $openModal('selectApprover')"
+                                                    class="cursor-pointer">
                                                     <x-icon name="pencil-square"
                                                         class="inline-block w-5 h-5 hover:text-gray-600 text-gray-500"
                                                         solid />
@@ -98,7 +97,8 @@
                                             <small class="text-gray-700 font-medium">Issued By</small>
                                             @if (auth()->user()->hasAnyRole(['super-admin', 'admin']))
                                                 <button wire:click="confirm({{ $items->first()->requisition_id }})"
-                                                    x-on:click="$openModal('selectIssuer')" class="cursor-pointer">
+                                                    x-on:click="$wire.activeModal = 'select-issuer'; $openModal('selectIssuer')"
+                                                    class="cursor-pointer">
                                                     <x-icon name="pencil-square"
                                                         class="inline-block w-5 h-5 hover:text-gray-600 text-gray-500"
                                                         solid />
@@ -115,7 +115,8 @@
                                         <div class="my-4 space-y-2">
                                             <small class="text-gray-700 font-medium">Received By</small>
                                             <button wire:click="confirm({{ $items->first()->requisition_id }})"
-                                                x-on:click="$openModal('selectReceiver')" class="cursor-pointer">
+                                                x-on:click="$wire.activeModal = 'select-receiver'; $openModal('selectReceiver')"
+                                                class="cursor-pointer">
                                                 <x-icon name="pencil-square"
                                                     class="inline-block w-5 h-5 hover:text-gray-600 text-gray-500"
                                                     solid />
@@ -178,12 +179,12 @@
                                                             class="px-4 py-3 text-xs text-start font-medium">
 
                                                             <x-button x-on:click="$openModal('editRequisition')"
-                                                                wire:click="select({{ $item->id }})" 2xs info
+                                                                wire:click="select({{ $item->id }})" xs flat info
                                                                 label="Edit" />
 
                                                             <form wire:submit.prevent="delete({{ $item->id }})"
                                                                 class="inline-block">
-                                                                <x-button type="submit" 2xs negative
+                                                                <x-button type="submit" xs flat negative
                                                                     label="Delete" />
                                                             </form>
                                                         </td>
@@ -201,10 +202,9 @@
                 @endif
             @elseif($activeTab === 'tab2')
                 <div class="w-full flex justify-center items-start gap-x-6 py-6">
-                    @livewire('pages.components.requisition-slip')
+                    @livewire('pages.components.requisition-slip', ['pdf' => $pdf ?? null])
                 </div>
             @endif
-
         </div>
     </div>
     {{-- edit requisition --}}
@@ -240,21 +240,6 @@
         </form>
     </x-modal-card>
 
-    {{-- requestby --}}
-    <x-modal-card class="max-w-sm" title="Issued By" name="selectIssuer" warning>
-        <form>
-            <x-select wire:model="reqForm.issued_by" label="Select User" placeholder="Select a user for Issued By"
-                :options="$this->getUsers()" option-label="name" option-value="id" searchable />
-
-            <x-slot name="footer" class="flex justify-between gap-x-4">
-                <div class="flex gap-x-4 ml-auto">
-                    <x-button flat negative label="Cancel" x-on:click="close" />
-                    <x-button wire:click.prevent="updateConfirm" positive spinner label="Save" />
-                </div>
-            </x-slot>
-        </form>
-    </x-modal-card>
-
     {{-- approveby --}}
     <x-modal-card class="max-w-sm" title="Approved By" name="selectApprover" warning>
         <form>
@@ -272,7 +257,7 @@
     </x-modal-card>
 
     {{-- issuedby --}}
-    <x-modal-card class="max-w-sm" title="Issued By" name="selectApprover" warning>
+    <x-modal-card class="max-w-sm" title="Issued By" name="selectIssuer" warning>
         <form>
             <x-select wire:model="reqForm.issued_by" warning label="Search a Stock"
                 placeholder="Select a user for Issued By" :options="$this->getUsers()" option-label="name" option-value="id"

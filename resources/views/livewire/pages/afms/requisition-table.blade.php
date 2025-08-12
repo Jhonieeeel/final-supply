@@ -23,7 +23,8 @@
                                         </svg>
                                     </div>
                                 </div>
-                                <x-button x-on:click="$openModal('addRequisition')" positive label="Add Requisition" />
+                                <x-button icon="plus" x-on:click="$openModal('addRequisition')" positive
+                                    label="Add Requisition" />
                             </div>
                             <div class="overflow-hidden">
                                 <table class="min-w-full divide-y divide-gray-200">
@@ -58,10 +59,11 @@
                                                     <x-badge flat :color="$requisition->completed ? 'info' : 'negative'"
                                                         label="{{ $requisition->completed ? 'Confirmed' : 'Pending' }}" />
                                                 </td>
+
                                                 <td
                                                     class="px-6 text-end py-4 whitespace-nowrap text-sm font-medium text-blue-800">
-                                                    <x-button wire:click='select({{ $requisition->owner_id }})' 2xs
-                                                        positive outline label="View" icon="check" />
+                                                    <x-button wire:click='select({{ $requisition->owner_id }})' xs
+                                                        positive flat label="View" icon="check" />
                                                 </td>
                                             </tr>
                                         @empty

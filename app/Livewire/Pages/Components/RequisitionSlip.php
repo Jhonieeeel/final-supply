@@ -2,19 +2,22 @@
 
 namespace App\Livewire\Pages\Components;
 
-use Livewire\Attributes\On;
+use App\Livewire\Forms\RequisitionSlipForm;
 use Livewire\Component;
+use Livewire\WithFileUploads;;;
 
 class RequisitionSlip extends Component
 {
 
-    public $requisition;
+    use WithFileUploads;
 
-    #[On('renderPdf')]
-    public function handleRequisition($requisition)
+    public RequisitionSlipForm $slipForm;
+
+    public $pdf;
+
+    public function update()
     {
-        $this->requisition = $requisition;;
-        dd($this->requisition);
+        $this->slipForm->updateRequisition($this->pdf->requisition_id);
     }
 
     public function render()
