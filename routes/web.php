@@ -7,20 +7,17 @@ use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome');
 
-Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+Route::middleware(['auth', 'verified'])->group(function () {
 
 
-Route::get('supply', SupplyTable::class)->middleware(['auth', 'verified'])->name('supply');
-Route::get('stock', StockTable::class)->middleware(['auth', 'verified'])->name('stock');
-Route::get('requisition', RequisitionTable::class)->middleware(['auth', 'verified'])->name('requisition');
+    Route::view('dashboard', 'dashboard')->name('dashboard');
+    Route::get('supply', SupplyTable::class)->name('supply')->lazy();
+    Route::get('stock', StockTable::class)->name('stock')->lazy();
+    Route::get('requisition', RequisitionTable::class)->name('requisition')->lazy();
 
+    // profile
+    Route::view('profile', 'profile')->name('profile');
+});
 
-Route::get('api_stocks', [RequisitionTable::class, 'supplies'])->middleware(['auth', 'verified'])->name('api.stocks.index');
-
-Route::view('profile', 'profile')
-    ->middleware(['auth'])
-    ->name('profile');
 
 require __DIR__ . '/auth.php';

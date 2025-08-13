@@ -69,17 +69,11 @@
                                                 @hasanyrole(['super-admin', 'admin'])
                                                     <td colspan="2"
                                                         class="px-6 py-4 whitespace-nowrap text-end text-sm font-medium space-x-2">
-                                                        <button x-on:click="$openModal('editStock')"
-                                                            wire:click="select({{ $stock->id }})"
-                                                            class="cursor-pointer ">
-                                                            <x-icon name="pencil"
-                                                                class="w-5 h-5 text-blue-500 hover:text-blue-700" />
-                                                        </button>
-                                                        <button wire:click="delete({{ $stock->id }})"
-                                                            class="cursor-pointer">
-                                                            <x-icon name="trash"
-                                                                class="w-5 h-5 text-red-500 hover:text-red-700" />
-                                                        </button>
+                                                        <x-button x-on:click="$openModal('editStock')"
+                                                            wire:click="select({{ $stock->id }})" xs flat info
+                                                            label="Edit" />
+                                                        <x-button wire:click="delete({{ $stock->id }})" xs flat negative
+                                                            label="Delete" />
                                                     </td>
                                                 @endhasanyrole
                                             </tr>

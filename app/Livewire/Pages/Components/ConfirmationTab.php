@@ -6,7 +6,6 @@ use App\Livewire\Forms\RequisitionForm;
 use App\Livewire\Forms\RequisitionSlipForm;
 use App\Models\Requisition;
 use App\Models\RequisitionItem;
-use App\Models\RequisitionSlip;
 use App\Models\User;
 use App\Services\ConvertWordToPdfService;
 use App\Services\GenerateWordService;
@@ -23,13 +22,10 @@ class ConfirmationTab extends Component
     use WireUiActions;
 
     public $requisitions = [];
-    public $confirmedItems = [];
 
     public $selectedRequisition;
     public $editRequisition;
-    public $pdf;
-
-    public $requisitionStatus = false;
+    public $requisition;
 
     public $activeTab;
     public $activeModal;
@@ -75,13 +71,22 @@ class ConfirmationTab extends Component
         ]);
         $this->dispatch("close-wireui-modal:{$this->activeModal}");
 
-        $this->dispatch('selectedRequisition', owner_id: $this->selectedRequisition, tab: $this->activeTab);
+        $this->dispatch('selectedRequisition', requisition_id: $this->selectedRequisition, tab: $this->activeTab);
     }
 
     public function confirm($id)
     {
         $this->editRequisition = Requisition::find($id);
         $this->reqForm->fill($this->editRequisition);
+    }
+
+    public function getAdmins()
+    {
+        return User::whereHas('roles', function ($query) {
+            $query->whereIn('name', ['admin', 'super-admin']);
+        })
+            ->get(['id', 'name'])
+            ->toArray();
     }
 
     public function getUsers()
@@ -99,7 +104,7 @@ class ConfirmationTab extends Component
 
         $this->dispatch('refresh-requisition-table');
 
-        $this->dispatch('selectedRequisition', owner_id: $this->selectedRequisition, tab: $this->activeTab);
+        $this->dispatch('selectedRequisition', requisition_id: $this->selectedRequisition, tab: $this->activeTab);
     }
 
     public function save()
@@ -112,8 +117,7 @@ class ConfirmationTab extends Component
             'description' => 'Item updated.',
         ]);
 
-
-        $this->dispatch('selectedRequisition', owner_id: $this->selectedRequisition, tab: $this->activeTab);
+        $this->dispatch('selectedRequisition', requisition_id: $this->selectedRequisition, tab: $this->activeTab);
     }
 
     public function select($id)
@@ -127,22 +131,22 @@ class ConfirmationTab extends Component
         $this->activeTab = $tab;
 
         if ($tab === 'tab2') {
-            $this->pdf = Requisition::find($this->selectedRequisition)->first();
+            $this->requisition = Requisition::with('items.stock')->find($this->selectedRequisition);
         }
 
-        $this->dispatch('selectedRequisition', owner_id: $this->selectedRequisition, tab: $tab);
+        $this->dispatch('selectedRequisition', requisition_id: $this->selectedRequisition, tab: $tab);
     }
 
     #[On('selectedRequisition')]
-    public function setRequisition($owner_id, $tab)
+    public function setRequisition($requisition_id, $tab)
     {
 
-        $this->selectedRequisition = $owner_id;
+        $this->selectedRequisition = $requisition_id;
         $this->activeTab = $tab;
 
         $this->requisitions = RequisitionItem::with('stock.supply', 'requisition')
             ->whereHas('requisition', function ($query) {
-                $query->where('owner_id', $this->selectedRequisition);
+                $query->where('id', $this->selectedRequisition);
             })
             ->get();
     }

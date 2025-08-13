@@ -62,8 +62,8 @@
 
                                                 <td
                                                     class="px-6 text-end py-4 whitespace-nowrap text-sm font-medium text-blue-800">
-                                                    <x-button wire:click='select({{ $requisition->owner_id }})' xs
-                                                        positive flat label="View" icon="check" />
+                                                    <x-button wire:click='select({{ $requisition->id }})' xs positive
+                                                        flat label="View" icon="check" />
                                                 </td>
                                             </tr>
                                         @empty

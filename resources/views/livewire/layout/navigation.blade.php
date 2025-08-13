@@ -29,16 +29,16 @@ new class extends Component {
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
+                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate.hover>
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('supply')" :active="request()->routeIs('supply')" wire:navigate>
+                    <x-nav-link :href="route('supply')" :active="request()->routeIs('supply')" wire:navigate.hover>
                         {{ __('Supplies') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('stock')" :active="request()->routeIs('stock')" wire:navigate>
+                    <x-nav-link :href="route('stock')" :active="request()->routeIs('stock')" wire:navigate.hover>
                         {{ __('Stocks') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('requisition')" :active="request()->routeIs('requisition')" wire:navigate>
+                    <x-nav-link :href="route('requisition')" :active="request()->routeIs('requisition')" wire:navigate.hover>
                         {{ __('Requests') }}
                     </x-nav-link>
                 </div>

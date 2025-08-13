@@ -26,7 +26,7 @@ class RequisitionTable extends Component
     {
         $this->selectedTab = 'tab1';
         $this->requisitionId = $id;
-        $this->dispatch('selectedRequisition', owner_id: $id, tab: 'tab1');
+        $this->dispatch('selectedRequisition', requisition_id: $this->requisitionId, tab: 'tab1');
     }
 
     public function save()
@@ -41,7 +41,7 @@ class RequisitionTable extends Component
         ]);
 
         if ($this->requisitionId) {
-            $this->dispatch('selectedRequisition', owner_id: Auth::id(), tab: 'tab1');
+            $this->dispatch('selectedRequisition', requisition_id: $this->requisitionId, tab: 'tab1');
         }
 
         $this->dispatch('close-wireui-modal:add-requisition');
@@ -53,14 +53,14 @@ class RequisitionTable extends Component
     {
         return view('livewire.pages.afms.requisition-table', [
             'requisitions' => Requisition::with('items')
-                ->has('items') // only requisitions with at least 1 item
+                ->has('items')
                 ->paginate(5)
         ]);
     }
 
     public function getSupplies()
     {
-        $stocks = Stock::with('supply')
+        $stocks = Stock::where('quantity', '>', 0)->with('supply')
             ->get(['id', 'supply_id', 'quantity'])
             ->map(function ($stock) {
                 return [

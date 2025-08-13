@@ -5,10 +5,13 @@ namespace App\Livewire\Pages\Afms;
 use App\Livewire\Forms\SupplyForm;
 use App\Models\Supply;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Lazy;
 use Livewire\Component;
 use Livewire\WithPagination;
 use WireUi\Traits\WireUiActions;
 
+
+#[Lazy(isolate: false)]
 class SupplyTable extends Component
 {
     use WireUiActions;
@@ -17,6 +20,12 @@ class SupplyTable extends Component
 
     public $search;
     public $selectedSupply;
+
+
+    public function openModal()
+    {
+        $this->dispatch('open-wireui-modal:add-supply');
+    }
 
     public function edit()
     {
@@ -39,7 +48,7 @@ class SupplyTable extends Component
 
     public function delete($supply_id)
     {
-        $supply = Supply::find($supply_id)->delete();
+        Supply::find($supply_id)->delete();
 
         $this->notification()->send([
             'icon' => 'trash',

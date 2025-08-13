@@ -16,7 +16,8 @@ return new class extends Migration
             $table->string('barcode')->unique();
             $table->integer('quantity');
             $table->decimal('price');
-            $table->foreignId('supply_id')->constrained()->cascadeOnUpdate();
+            $table->integer('requested_times')->default(0);
+            $table->foreignId('supply_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->timestamps();
         });
     }

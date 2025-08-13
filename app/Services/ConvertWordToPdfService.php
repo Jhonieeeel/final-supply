@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+
 class ConvertWordToPdfService
 {
     public function convert($filepath)
@@ -31,9 +32,6 @@ class ConvertWordToPdfService
         if (file_exists($filepath)) {
             unlink($filepath);
         }
-
-
-
         return [
             'pdf_path' => $pdfPath,
             'file_name' => $docx . '.pdf',

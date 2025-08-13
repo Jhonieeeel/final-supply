@@ -47,13 +47,23 @@
                                 <div class="w-full space-y-5">
                                     <div class="sm:flex gap-x-12 items-center">
                                         <h3 class="font-medium text-xl text-gray-700">Requisition Form</h3>
+                                        @if ($items->first()->requisition->completed)
+                                            <x-badge rounded="md" positive label="Completed" />
+                                        @else
+                                            <x-badge rounded="md" negative label="Pending" />
+                                        @endif
                                         <div class="ml-auto">
-                                            <x-button :disabled="!(
-                                                $items->first()->requisition->approved_by &&
-                                                $items->first()->requisition->issued_by &&
-                                                $items->first()->requisition->received_by
-                                            )" spinner wire:click="generateWord" icon="printer"
-                                                positive label=" Generate RIS" />
+                                            @if (!$items->first()->requisition->completed)
+                                                <x-button :disabled="!(
+                                                    $items->first()->requisition->approved_by &&
+                                                    $items->first()->requisition->issued_by &&
+                                                    $items->first()->requisition->received_by
+                                                )" spinner wire:click="generateWord"
+                                                    icon="printer" positive label=" Generate RIS" />
+                                            @elseif ($items->first()->requisition->completed)
+                                                <x-button spinner wire:click="changeTab('tab2')" icon="document-check"
+                                                    positive label=" View RIS" />
+                                            @endif
                                         </div>
                                     </div>
                                     <div class="sm:flex sm:justify-between sm:items-start">
@@ -61,13 +71,15 @@
                                         <div class="my-4 space-y-2">
                                             <small class="text-gray-700 font-medium">Requested By</small>
 
-                                            <button wire:click="confirm({{ $items->first()->requisition->id }})"
-                                                x-on:click="$wire.activeModal = 'select-requester'; $openModal('selectRequester')"
-                                                class="cursor-pointer">
-                                                <x-icon name="pencil-square"
-                                                    class="inline-block w-5 h-5 hover:text-gray-600 text-gray-500"
-                                                    solid />
-                                            </button>
+                                            @if (!$items->first()->requisition->completed)
+                                                <button wire:click="confirm({{ $items->first()->requisition->id }})"
+                                                    x-on:click="$openModal('selectRequester') ; $wire.activeModal = 'select-requester'; "
+                                                    class="cursor-pointer">
+                                                    <x-icon name="pencil-square"
+                                                        class="inline-block w-5 h-5 hover:text-gray-600 text-gray-500"
+                                                        solid />
+                                                </button>
+                                            @endif
                                             <span class="block text-start">
                                                 <x-badge flat info
                                                     label="{{ $items->first()->requisition->requested_by ? $items->first()->requisition->requestedBy->name : $items->first()->requisition->owner->name }} (default)" />
@@ -77,13 +89,15 @@
                                         <div class="my-4 space-y-2">
                                             <small class="text-gray-700 font-medium">Approved By</small>
                                             @if (auth()->user()->hasAnyRole(['super-admin', 'admin']))
-                                                <button wire:click="confirm({{ $items->first()->requisition->id }})"
-                                                    x-on:click="$wire.activeModal = 'select-approver'; $openModal('selectApprover')"
-                                                    class="cursor-pointer">
-                                                    <x-icon name="pencil-square"
-                                                        class="inline-block w-5 h-5 hover:text-gray-600 text-gray-500"
-                                                        solid />
-                                                </button>
+                                                @if (!$items->first()->requisition->completed)
+                                                    <button wire:click="confirm({{ $items->first()->requisition->id }})"
+                                                        x-on:click="$wire.activeModal = 'select-approver'; $openModal('selectApprover')"
+                                                        class="cursor-pointer">
+                                                        <x-icon name="pencil-square"
+                                                            class="inline-block w-5 h-5 hover:text-gray-600 text-gray-500"
+                                                            solid />
+                                                    </button>
+                                                @endif
                                             @endif
                                             <span class="block text-start">
                                                 <x-badge flat :color="$items->first()->requisition->approved_by
@@ -96,13 +110,15 @@
                                         <div class="my-4 space-y-2">
                                             <small class="text-gray-700 font-medium">Issued By</small>
                                             @if (auth()->user()->hasAnyRole(['super-admin', 'admin']))
-                                                <button wire:click="confirm({{ $items->first()->requisition_id }})"
-                                                    x-on:click="$wire.activeModal = 'select-issuer'; $openModal('selectIssuer')"
-                                                    class="cursor-pointer">
-                                                    <x-icon name="pencil-square"
-                                                        class="inline-block w-5 h-5 hover:text-gray-600 text-gray-500"
-                                                        solid />
-                                                </button>
+                                                @if (!$items->first()->requisition->completed)
+                                                    <button wire:click="confirm({{ $items->first()->requisition_id }})"
+                                                        x-on:click="$wire.activeModal = 'select-issuer'; $openModal('selectIssuer')"
+                                                        class="cursor-pointer">
+                                                        <x-icon name="pencil-square"
+                                                            class="inline-block w-5 h-5 hover:text-gray-600 text-gray-500"
+                                                            solid />
+                                                    </button>
+                                                @endif
                                             @endif
                                             <span class="block text-start">
                                                 <x-badge flat :color="$items->first()->requisition->issued_by
@@ -114,13 +130,15 @@
                                         {{-- received by --}}
                                         <div class="my-4 space-y-2">
                                             <small class="text-gray-700 font-medium">Received By</small>
-                                            <button wire:click="confirm({{ $items->first()->requisition_id }})"
-                                                x-on:click="$wire.activeModal = 'select-receiver'; $openModal('selectReceiver')"
-                                                class="cursor-pointer">
-                                                <x-icon name="pencil-square"
-                                                    class="inline-block w-5 h-5 hover:text-gray-600 text-gray-500"
-                                                    solid />
-                                            </button>
+                                            @if (!$items->first()->requisition->completed)
+                                                <button wire:click="confirm({{ $items->first()->requisition_id }})"
+                                                    x-on:click="$wire.activeModal = 'select-receiver'; $openModal('selectReceiver')"
+                                                    class="cursor-pointer">
+                                                    <x-icon name="pencil-square"
+                                                        class="inline-block w-5 h-5 hover:text-gray-600 text-gray-500"
+                                                        solid />
+                                                </button>
+                                            @endif
                                             <span class="block text-start">
                                                 <x-badge flat :color="$items->first()->requisition->received_by
                                                     ? 'positive'
@@ -134,10 +152,6 @@
                                             <tr>
                                                 <th scope="col"
                                                     class="px-4 py-3 text-xs text-start text-gray-600 uppercase font-medium">
-                                                    #
-                                                </th>
-                                                <th scope="col"
-                                                    class="px-4 py-3 text-xs text-start text-gray-600 uppercase font-medium">
                                                     Item Description
                                                 </th>
                                                 <th scope="col"
@@ -148,23 +162,20 @@
                                                     class="px-4 py-3 text-xs text-start text-gray-600 uppercase font-medium">
                                                     Requested Quantity
                                                 </th>
-                                                @if (auth()->id() === $items->first()->requisition->owner_id ||
-                                                        auth()->user()->hasAnyRole(['admin', 'super-admin']))
-                                                    <th spinner="delete" scope="col"
-                                                        class="px-4 py-3 text-xs text-start text-gray-600 uppercase font-medium">
-                                                        Action
-                                                    </th>
+                                                @if (!$items->first()->requisition->completed)
+                                                    @if (auth()->id() === $items->first()->requisition->owner_id ||
+                                                            auth()->user()->hasAnyRole(['admin', 'super-admin']))
+                                                        <th spinner="delete" scope="col"
+                                                            class="px-4 py-3 text-xs text-start text-gray-600 uppercase font-medium">
+                                                            Action
+                                                        </th>
+                                                    @endif
                                                 @endif
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @foreach ($items as $item)
                                                 <tr>
-                                                    <td class="px-4 py-3 text-xs font-medium">
-                                                        <x-checkbox
-                                                            wire:model.live="confirmedItems.{{ $item->id }}"
-                                                            value="true" />
-                                                    </td>
                                                     <td class="px-4 py-3 text-xs  font-medium">
                                                         {{ $item->stock->supply->name }}</td>
                                                     <td class="px-4 py-3 text-xs text-start font-medium">
@@ -173,21 +184,24 @@
                                                     <td class="px-4 py-3 text-xs text-start font-medium">
                                                         <x-badge flat positive label="{{ $item->quantity }}" />
                                                     </td>
-                                                    @if (auth()->id() === $item->requisition->owner_id ||
-                                                            auth()->user()->hasAnyRole(['admin', 'super-admin']))
-                                                        <td colspan="2"
-                                                            class="px-4 py-3 text-xs text-start font-medium">
+                                                    @if (!$items->first()->requisition->completed)
+                                                        @if (auth()->id() === $item->requisition->owner_id ||
+                                                                auth()->user()->hasAnyRole(['admin', 'super-admin']))
+                                                            <td colspan="2"
+                                                                class="px-4 py-3 text-xs text-start font-medium">
 
-                                                            <x-button x-on:click="$openModal('editRequisition')"
-                                                                wire:click="select({{ $item->id }})" xs flat info
-                                                                label="Edit" />
+                                                                <x-button x-on:click="$openModal('editRequisition')"
+                                                                    wire:click="select({{ $item->id }})" xs flat
+                                                                    info label="Edit" />
 
-                                                            <form wire:submit.prevent="delete({{ $item->id }})"
-                                                                class="inline-block">
-                                                                <x-button type="submit" xs flat negative
-                                                                    label="Delete" />
-                                                            </form>
-                                                        </td>
+                                                                <form
+                                                                    wire:submit.prevent="delete({{ $item->id }})"
+                                                                    class="inline-block">
+                                                                    <x-button type="submit" xs flat negative
+                                                                        label="Delete" />
+                                                                </form>
+                                                            </td>
+                                                        @endif
                                                     @endif
                                                 </tr>
                                             @endforeach
@@ -202,7 +216,7 @@
                 @endif
             @elseif($activeTab === 'tab2')
                 <div class="w-full flex justify-center items-start gap-x-6 py-6">
-                    @livewire('pages.components.requisition-slip', ['pdf' => $pdf ?? null])
+                    @livewire('pages.components.requisition-slip', ['requisition' => $requisition])
                 </div>
             @endif
         </div>
@@ -244,7 +258,7 @@
     <x-modal-card class="max-w-sm" title="Approved By" name="selectApprover" warning>
         <form>
             <x-select wire:model="reqForm.approved_by" warning label="Search a Stock"
-                placeholder="Select a user for Approved By" :options="$this->getUsers()" option-label="name" option-value="id"
+                placeholder="Select a user for Approved By" :options="$this->getAdmins()" option-label="name" option-value="id"
                 searchable />
 
             <x-slot name="footer" class="flex justify-between gap-x-4">
@@ -260,7 +274,7 @@
     <x-modal-card class="max-w-sm" title="Issued By" name="selectIssuer" warning>
         <form>
             <x-select wire:model="reqForm.issued_by" warning label="Search a Stock"
-                placeholder="Select a user for Issued By" :options="$this->getUsers()" option-label="name" option-value="id"
+                placeholder="Select a user for Issued By" :options="$this->getAdmins()" option-label="name" option-value="id"
                 searchable />
 
             <x-slot name="footer" class="flex justify-between gap-x-4">

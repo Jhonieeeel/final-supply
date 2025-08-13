@@ -24,7 +24,8 @@
                                     </div>
                                 </div>
                                 @hasanyrole(['super-admin', 'admin'])
-                                    <x-button @click="$openModal('addSupply')" icon="plus" positive label="Add Supply" />
+                                    <x-button x-on:click="$openModal('addSupply')" icon="plus" positive
+                                        label="Add Supply" />
                                 @endhasanyrole
                             </div>
                             <div class="overflow-hidden">
@@ -62,18 +63,12 @@
                                                 </td>
                                                 @hasanyrole(['super-admin', 'admin'])
                                                     <td colspan="2"
-                                                        class="px-6 py-4 whitespace-nowrap text-end text-sm font-medium space-x-2">
-                                                        <button x-on:click="$openModal('editSupply')"
-                                                            wire:click="select({{ $supply->id }})"
-                                                            class="cursor-pointer ">
-                                                            <x-icon name="pencil"
-                                                                class="w-5 h-5 text-blue-500 hover:text-blue-700" />
-                                                        </button>
-                                                        <button wire:click="delete({{ $supply->id }})"
-                                                            class="cursor-pointer">
-                                                            <x-icon name="trash"
-                                                                class="w-5 h-5 text-red-500 hover:text-red-700" />
-                                                        </button>
+                                                        class="px-6 py-4 whitespace-nowrap text-end text-sm font-medium">
+                                                        <x-button x-on:click="$openModal('editSupply')"
+                                                            wire:click="select({{ $supply->id }})" xs flat info
+                                                            label="Edit" />
+                                                        <x-button wire:click="delete({{ $supply->id }})" xs flat negative
+                                                            label="Delete" />
                                                     @else
                                                     </td>
                                                 @endhasanyrole
