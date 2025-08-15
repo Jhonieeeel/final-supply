@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('stocks', function (Blueprint $table) {
             $table->id();
             $table->string('barcode')->unique();
+            $table->string('stock_number');
             $table->integer('quantity');
+            $table->integer('initial_quantity');
             $table->decimal('price');
-            $table->integer('requested_times')->default(0);
             $table->foreignId('supply_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->timestamps();
         });

@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('requisition_slips', function (Blueprint $table) {
+        Schema::create('report_supplies', function (Blueprint $table) {
             $table->id();
-            $table->string('requisition_file')->nullable();
-            $table->foreignId('requisition_id')->constrained()->cascadeOnDelete();
-            $table->boolean('is_approved')->default(false);
+            $table->string('serial_number');
+            $table->string('rsmi_pdf')->nullable();
             $table->timestamps();
         });
     }
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('requisition_slips');
+        Schema::dropIfExists('report_supplies');
     }
 };

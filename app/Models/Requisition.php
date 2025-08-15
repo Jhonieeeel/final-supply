@@ -8,6 +8,10 @@ use Illuminate\Support\Facades\Auth;
 
 class Requisition extends Model
 {
+    public function report()
+    {
+        return $this->belongsTo(ReportSupply::class);
+    }
 
     public function slips()
     {

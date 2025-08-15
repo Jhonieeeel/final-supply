@@ -4,11 +4,7 @@ namespace App\Livewire\Pages\Afms;
 
 use App\Livewire\Forms\RequisitionForm;
 use App\Models\Requisition;
-use App\Models\RequisitionItem;
 use App\Models\Stock;
-use App\Models\Supply;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -33,7 +29,6 @@ class RequisitionTable extends Component
     {
         $this->reqForm->create();
 
-
         $this->notification()->send([
             'icon' => 'success',
             'title' => 'Created Successfully!',
@@ -51,6 +46,7 @@ class RequisitionTable extends Component
     #[Layout('layouts.app')]
     public function render()
     {
+
         return view('livewire.pages.afms.requisition-table', [
             'requisitions' => Requisition::with('items')
                 ->has('items')

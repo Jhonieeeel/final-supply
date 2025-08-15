@@ -14,4 +14,12 @@ class Stock extends Model
     {
         return $this->belongsTo(RequisitionItem::class);
     }
+
+    protected static function booted()
+    {
+        static::creating(function ($stock) {
+            $date = now()->format('Y-m-d');
+            $stock->stock_number =  "Supply-{$date}";
+        });
+    }
 }
