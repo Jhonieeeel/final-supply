@@ -2,11 +2,13 @@
 
 namespace App\Livewire\Forms;
 
+use App\Models\ReportSupply;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Requisition;
 use App\Models\RequisitionItem;
 use App\Models\Stock;
 use App\Models\User;
+use Carbon\Carbon;
 use Livewire\Attributes\Validate;
 use Livewire\Form;
 
@@ -59,9 +61,6 @@ class RequisitionForm extends Form
             'quantity' => $this->quantity,
             'requisition_id' => $this->requisition_id
         ]);
-
-
-
         return;
     }
 
@@ -69,13 +68,24 @@ class RequisitionForm extends Form
     // create new requisition or update existing one
     public function create()
     {
+        // checking report
+        $report = ReportSupply::whereMonth('created_at', Carbon::now()->month)->first();
+
+        if (!$report) {
+            $report = ReportSupply::create([
+                'serial_number' => Carbon::now()->format('Y-m-d') . '-' . 1
+            ]);
+        }
+
+        // checking requisition
         $requisition = Requisition::where('owner_id', Auth::id())->where('completed', false)->first();
 
         if ($requisition && $requisition->items()->exists()) {
+            // checking itesm
             $item = $requisition->items()->where('stock_id', $this->stock_id)->first();
             $requisition->items()->updateOrCreate(
                 ['stock_id' => $this->stock_id],
-                ['quantity' => ($item?->quantity + $this->quantity)]
+                ['quantity' => ($item ? $item->quantity + $this->quantity : $this->quantity)]
             );
 
             $this->reset();
@@ -88,7 +98,8 @@ class RequisitionForm extends Form
             'requested_by' => Auth::id(),
             'approved_by' => User::where('name', 'Dave Madayag')->first()->id,
             'issued_by' => User::where('name', 'Ray Alingasa')->first()->id,
-            'received_by' => $this->received_by
+            'received_by' => $this->received_by,
+            'report_supply_id' => $report->id
         ]);
 
         $newRequisition->items()->create([

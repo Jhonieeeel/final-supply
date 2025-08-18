@@ -108,8 +108,8 @@ class DatabaseSeeder extends Seeder
             'ris' => null,
             'owner_id' => 1,
             'requested_by' => $superAdminUser->id,
-            'approved_by' => null,
-            'issued_by' => null,
+            'approved_by' => 1,
+            'issued_by' => 2,
             'received_by' => null,
             'report_supply_id' => $monthlyReport->id
         ]);

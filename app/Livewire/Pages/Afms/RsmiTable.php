@@ -2,37 +2,52 @@
 
 namespace App\Livewire\Pages\Afms;
 
-use App\Services\MakeMonthlyReportService;
+use App\Models\ReportSupply;
+use Carbon\Carbon;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
-use Livewire\Features\SupportFileUploads\WithFileUploads;
 
 
 class RsmiTable extends Component
 {
-
-    use WithFileUploads;
-
     public $rsmiFile;
+    public $inputtedDate;
 
     public function create()
     {
-        $report = new MakeMonthlyReportService();
-        $sheet = $report->createMonthlyReport($this->rsmiFile);
+        dd($this->inputtedDate);
+        $this->rsmiFile = storage_path("app/public/rsmi_template.xls");
 
-        $sheet->setCellValue('B14', 'RIS_TEST');
-        $sheet->setCellValue('C14', 'RIS_TEST');
-        $sheet->setCellValue('D14', 'Stock No. Test');
-        $sheet->setCellValue('E14', 'Alcohol 500ml');
-        $sheet->setCellValue('F14', 'Bottle');
-        $sheet->setCellValue('G14', '2');
+        // $report = new MakeMonthlyReportService();
+        // $sheet = $report->createMonthlyReport($this->rsmiFile);
 
-        $report->saveReport($report->getSpreadsheet());
+        // B5 = January or From December to January
+        // I7 = Supply-1-2025-01 (RSMI Serial) = Division Acronym - Year - Month - RSMI Serial Number
+        // B13 = RIS_VALUE
+        // D13 = Stock_Number
+        // E13 = Item name
+        // F13 = unit
+        // G13 = Requested Qty
+        // D27 = Beginning Balance
+        // D30 = Total
+        // D31 = Less issuance
+        // D32 = Balance
+
+        // $sheet->setCellValue('B14', 'RIS_TEST');
+
+        // $report->saveReport($report->getSpreadsheet());
+        $requisitions = ReportSupply::whereHas('requisition', function ($query) {
+            $query->whereMonth('created_at', Carbon::now()->month)
+                ->whereYear('created_at', Carbon::now()->year);
+        })->get();
+
+        dd($requisitions);
     }
 
     #[Layout('layouts.app')]
     public function render()
     {
+
         return view('livewire.pages.afms.rsmi-table');
     }
 }

@@ -13,8 +13,7 @@ return new class extends Migration
     {
         Schema::create('report_supplies', function (Blueprint $table) {
             $table->id();
-            $table->string('serial_number');
-            $table->string('rsmi_pdf')->nullable();
+            $table->string('serial_number')->unique();
             $table->timestamps();
         });
     }
